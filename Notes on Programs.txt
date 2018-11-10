@@ -3,3 +3,4 @@ GamePart05	created enemy charavter - component system
 GamePart06	adding turn based system
 GamePart07	enemy attacking/interaction
 GamePart08	added death system
+GamePart9   refactored mov funtion and attack functions
