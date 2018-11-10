@@ -1,4 +1,4 @@
 GamePart04	created a mpa composed of tiles, player icon can move with keyboard
 GamePart05	created enemy charavter - component system
 GamePart06	adding turn based system
-GamePart07  enemy attacking
+GamePart07  enemy attacking/interaction

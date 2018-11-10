@@ -49,9 +49,26 @@ class obj_Actor:
         SURFACE_MAIN.blit(self.sprite, (self.x*constants.CELL_WIDTH, self.y*constants.CELL_HEIGHT))
 
     def move(self, dx, dy):
-        if GAME_MAP[self.x + dx][self.y + dy].block_path == False:
+
+        tile_is_wall = (GAME_MAP[self.x + dx][self.y + dy].block_path == True)
+        target = None
+
+        for object in GAME_OBJECTS:
+            if (object is not self and
+                object.x == self.x + dx and
+                object.y == self.y + dy and
+                object.creature):
+                target = object
+                break
+
+        if target:
+            print (self.creature.name_instance + " attacks " + target.creature.name_instance)
+
+        if not tile_is_wall and target is None:
             self.x += dx
             self.y += dy
+
+
 
 #
 #(  ____ \(  ___  )(       )(  ____ )(  ___  )( (    /|(  ____ \( (    /|
@@ -225,7 +242,7 @@ def game_initialize():
     GAME_MAP = map_create()
 
     creature_com1 = com_Creature("greg")
-    PLAYER = obj_Actor(0, 0, "python", constants.S_PLAYER ,creature = creature_com1)
+    PLAYER = obj_Actor(1, 1, "python", constants.S_PLAYER ,creature = creature_com1)
 
     ai_com = ai_Test()
     creature_com2 = com_Creature("jackie")
