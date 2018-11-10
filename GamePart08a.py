@@ -83,16 +83,20 @@ class obj_Actor:
 
 class com_Creature:
     #creatures have health can attack other objects and can die
-    def __init__(self, name_instance, hp=10):
+    def __init__(self, name_instance, hp=10, death_function = None):
 
         self.name_instance = name_instance
         self.maxhp = hp
         self.hp = hp
+        self.death_function = death_function
 
     def take_damage(self, damage):
         self.hp -= damage
         print (self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp))
 
+        if self.hp <= 0:
+            if self.death_function is not None:
+                self.death_function(self.owner)
 
 
 
@@ -115,6 +119,11 @@ class ai_Test:
         self.owner.move(libtcod.random_get_int(0,-1, 1,),libtcod.random_get_int(0,-1, 1,))
 
 
+def death_monster(monster):
+    #on death most monster stop moving
+    print (monster.creature.name_instance + " is dead!")
+    monster.creature = None
+    monster.ai = None
 
 
 
@@ -251,7 +260,7 @@ def game_initialize():
     PLAYER = obj_Actor(1, 1, "python", constants.S_PLAYER ,creature = creature_com1)
 
     ai_com = ai_Test()
-    creature_com2 = com_Creature("jackie")
+    creature_com2 = com_Creature("jackie", death_function = death_monster       )
     ENEMY  = obj_Actor(15, 15, "crab", constants.S_ENEMY, creature = creature_com2, ai = ai_com)
 
     GAME_OBJECTS = [PLAYER, ENEMY]
