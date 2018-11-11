@@ -39,4 +39,4 @@ S_FLOOREXPLORED     = pygame.image.load("data/floorunseen.png")
 #FOV SETTINGS
 FOV_ALGO        = libtcod.FOV_BASIC
 FOV_LIGHT_WALLS = True
-TORCH_RADIUS    = 10
+TORCH_RADIUS    = 5
