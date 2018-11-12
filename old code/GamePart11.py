@@ -224,6 +224,8 @@ def draw_game():
     #Draw all objects
     for obj in GAME_OBJECTS:
         obj.draw()
+
+    draw_debug()
     #Player is drawn last so it is on top layer of display - play is always on top
     #update the display
     pygame.display.flip()
@@ -253,6 +255,36 @@ def draw_map(map_to_draw):
                 else:
                     #draw floor
                     SURFACE_MAIN.blit(constants.S_FLOOREXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
+
+def draw_debug():
+    draw_text(SURFACE_MAIN, "Test", (0,0), constants.COLOR_RED)
+
+
+def draw_text(display_surface, text_to_display, T_coords, text_color):
+    #T stands for touple, this function takes in text and displayes it on display_surface
+    text_surf, text_rect = helper_text_objects(text_to_display, text_color)
+
+    text_rect.topleft = T_coords
+
+    display_surface.blit(text_surf, text_rect)
+
+
+# __    __   _______  __      .______    _______ .______
+#|  |  |  | |   ____||  |     |   _  \  |   ____||   _  \
+#|  |__|  | |  |__   |  |     |  |_)  | |  |__   |  |_)  |
+#|   __   | |   __|  |  |     |   ___/  |   __|  |      /
+#|  |  |  | |  |____ |  `----.|  |      |  |____ |  |\  \----.
+#|__|  |__| |_______||_______|| _|      |_______|| _| `._____|
+#
+
+def helper_text_objects(incoming_text, incoming_color):
+
+    Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color)
+
+    return Text_surface, Text_surface.get_rect()
+
+
+
 
 
 
