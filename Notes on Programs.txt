@@ -6,3 +6,4 @@ GamePart08	added death system
 GamePart09  refactored mov funtion and attack functions
 GamePart10  create a field of view
 GamePart11  display text on the main window
+GamePart12  display text with 4 message buffer

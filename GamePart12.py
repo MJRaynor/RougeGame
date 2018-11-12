@@ -86,18 +86,19 @@ class com_Creature:
             self.owner.y += dy
 
     def attack(self, target, damage):
-        print (self.name_instance + " attacks " + target.creature.name_instance + " for " + str(damage) + " damage!")
+        #print (self.name_instance + " attacks " + target.creature.name_instance + " for " + str(damage) + " damage!")
+        game_message(self.name_instance + " attacks " + target.creature.name_instance + " for " + str(damage) + " damage!", constants.COLOR_WHITE)
         target.creature.take_damage(damage)
 
     def take_damage(self, damage):
         self.hp -= damage
-        print (self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp))
+        #print (self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp))
+        game_message(self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp), constants.COLOR_RED)
+
 
         if self.hp <= 0:
             if self.death_function is not None:
                 self.death_function(self.owner)
-
-
 
 #class com_Item:
 
@@ -120,7 +121,8 @@ class ai_Test:
 
 def death_monster(monster):
     #on death most monster stop moving
-    print (monster.creature.name_instance + " is dead!")
+    #print (monster.creature.name_instance + " is dead!")
+    game_message(monster.creature.name_instance + " is dead!", constants.COLOR_GREY)
     monster.creature = None
     monster.ai = None
 
@@ -226,6 +228,9 @@ def draw_game():
         obj.draw()
 
     draw_debug()
+
+    draw_messages()
+
     #Player is drawn last so it is on top layer of display - play is always on top
     #update the display
     pygame.display.flip()
@@ -257,12 +262,32 @@ def draw_map(map_to_draw):
                     SURFACE_MAIN.blit(constants.S_FLOOREXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
 
 def draw_debug():
-    draw_text(SURFACE_MAIN, "fps: "+ str(int(CLOCK.get_fps())), (0,0), constants.COLOR_RED)
+
+    draw_text(SURFACE_MAIN, "fps: "+ str(int(CLOCK.get_fps())), (0,0), constants.COLOR_WHITE, constants.COLOR_BLACK)
+
+def draw_messages():
+
+    if len(GAME_MESSAGES) <= constants.NUM_MESSAGES:
+        to_draw = GAME_MESSAGES#(constants.NUM_MESSAGES)
+    else:
+        to_draw = GAME_MESSAGES[-constants.NUM_MESSAGES:]
 
 
-def draw_text(display_surface, text_to_display, T_coords, text_color):
+    text_height = helper_text_height(constants.FONT_MESSAGE_TEXT)
+
+    start_y = (constants.MAP_HEIGHT * constants.CELL_HEIGHT - (constants.NUM_MESSAGES * text_height)) -5
+
+    i = 0
+
+    for message,color in to_draw:
+
+        draw_text(SURFACE_MAIN, message, (0, start_y + (i * text_height)), color, constants.COLOR_BLACK)
+
+        i += 1
+
+def draw_text(display_surface, text_to_display, T_coords, text_color, back_color = None):
     #T stands for touple, this function takes in text and displayes it on display_surface
-    text_surf, text_rect = helper_text_objects(text_to_display, text_color)
+    text_surf, text_rect = helper_text_objects(text_to_display, text_color, back_color)
 
     text_rect.topleft = T_coords
 
@@ -277,14 +302,22 @@ def draw_text(display_surface, text_to_display, T_coords, text_color):
 #|__|  |__| |_______||_______|| _|      |_______|| _| `._____|
 #
 
-def helper_text_objects(incoming_text, incoming_color):
+def helper_text_objects(incoming_text, incoming_color, incoming_bg):
 
-    Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color)
+    if incoming_bg:
+        Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color, incoming_bg)
+    else:
+        Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color)
 
     return Text_surface, Text_surface.get_rect()
 
 
+def helper_text_height(font):
 
+    font_object = font.render('a', False ,(0 ,0, 0))
+    font_rect = font_object.get_rect()
+
+    return font_rect.height
 
 
 
@@ -347,7 +380,7 @@ def game_main_loop():
 #
 
 def game_initialize():
-    global SURFACE_MAIN, GAME_MAP, PLAYER, ENEMY, GAME_OBJECTS, FOV_CALCULATE, CLOCK
+    global SURFACE_MAIN, GAME_MAP, PLAYER, ENEMY, GAME_OBJECTS, FOV_CALCULATE, CLOCK, GAME_MESSAGES
     #initalizes the main window in pygame
     pygame.init()
 
@@ -359,6 +392,14 @@ def game_initialize():
     pygame.display.set_caption('Test Game!')
 
     GAME_MAP = map_create()
+
+    GAME_MESSAGES = []
+
+    #test messages
+    #game_message("test message", constants.COLOR_WHITE)
+    #game_message("test message2", constants.COLOR_RED)
+    #game_message("test message3", constants.COLOR_GREY)
+    #game_message("test message4", constants.COLOR_WHITE)
 
     FOV_CALCULATE = True
 
@@ -408,6 +449,13 @@ def game_handle_keys():
                 FOV_CALCULATE = True
                 return "player_moved"
     return "no-action"
+
+def game_message(game_msg, msg_color):#T means tuple
+
+    GAME_MESSAGES.append((game_msg, msg_color))
+
+
+
 
 # _______  _______ _________ _          _        _______  _______  _______
 #(       )(  ___  )\__   __/( (    /|  ( \      (  ___  )(  ___  )(  ____ )
