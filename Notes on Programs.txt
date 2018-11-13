@@ -7,3 +7,7 @@ GamePart09  refactored mov funtion and attack functions
 GamePart10  create a field of view
 GamePart11  display text on the main window
 GamePart12  display text with 4 message buffer
+GamePart13  factored out global variables into a game object
+GamePart14  implimented sprite sheet basics
+GamePart15  add idle animation
+

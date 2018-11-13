@@ -30,11 +30,8 @@ COLOR_DEFAULT_BG = COLOR_GREY
 
 
 #SPRITES
-S_PLAYER            = pygame.image.load("data/python.png")
-S_ENEMY             = pygame.image.load("data/crab.png")
-
-
-
+#S_PLAYER            = pygame.image.load("data/python.png")
+#S_ENEMY             = pygame.image.load("data/crab.png")
 
 S_WALL              = pygame.image.load("data/wall.jpg")
 S_WALLEXPLORED      = pygame.image.load("data/wallunseen.png")

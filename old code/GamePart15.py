@@ -32,10 +32,10 @@ class struc_Tile:
 #
 
 class obj_Actor:
-    def __init__(self, x, y, name_object, sprite, creature = None, ai = None):
+    def __init__(self, x, y, name_object, animation, creature = None, ai = None):
         self.x = x
         self.y = y
-        self.sprite = sprite
+        self.animation = animation
 
         self.creature = creature
         if creature:
@@ -50,7 +50,8 @@ class obj_Actor:
         is_visible = libtcod.map_is_in_fov(FOV_MAP, self.x, self.y)
 
         if is_visible:
-            SURFACE_MAIN.blit(self.sprite, (self.x*constants.CELL_WIDTH, self.y*constants.CELL_HEIGHT))
+            if len(self.animation) == 1:
+                SURFACE_MAIN.blit(self.animation[0], (self.x*constants.CELL_WIDTH, self.y*constants.CELL_HEIGHT))
 
 class obj_Game:
     def __init__(self):
@@ -74,6 +75,8 @@ class obj_Spritesheet:
                     scale = None):
         ### scale is s tuple
 
+        image_list = []
+
         image = pygame.Surface([width, height]).convert()
 
         image.blit(self.sprite_sheet, (0, 0), (self.tiledict[column]*width, row * height, width, height))
@@ -84,7 +87,9 @@ class obj_Spritesheet:
             (new_w, new_h) = scale
             image = pygame.transform.scale(image, (new_w, new_h))
 
-        return image
+        image_list.append(image)
+
+        return image_list
 
 #
 #(  ____ \(  ___  )(       )(  ____ )(  ___  )( (    /|(  ____ \( (    /|
@@ -441,16 +446,18 @@ def game_initialize():
 
     ## temp sprites
 
-    tempspritesheet            = obj_Spritesheet("data/tempspritesheet.png")
-    S_PLAYER = tempspritesheet.get_image('a',2 ,16 ,16 ,(32, 32))
-
+    charspritesheet  = obj_Spritesheet("data/reptiles.png")
+    enemyspritesheet = obj_Spritesheet("data/enemys.png")
+    A_PLAYER = charspritesheet.get_image('m',5 ,16 ,16 ,(32, 32))
+    A_ENEMY  = enemyspritesheet.get_image('k',1 ,16 ,16 ,(32, 32))
 
     creature_com1 = com_Creature("greg")
-    PLAYER = obj_Actor(1, 1, "python", S_PLAYER ,creature = creature_com1)
+    PLAYER = obj_Actor(1, 1, "python", A_PLAYER ,creature = creature_com1)
 
+
+    creature_com2 = com_Creature("jackie", death_function = death_monster)
     ai_com = ai_Test()
-    creature_com2 = com_Creature("jackie", death_function = death_monster       )
-    ENEMY  = obj_Actor(15, 15, "crab", constants.S_ENEMY, creature = creature_com2, ai = ai_com)
+    ENEMY  = obj_Actor(15, 15, "crab", A_ENEMY, creature = creature_com2, ai = ai_com)
 
     #ai_com2 = ai_Test()
     #creature_com3 = com_Creature("jackie2", death_function = death_monster       )
