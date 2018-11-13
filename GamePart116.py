@@ -20,6 +20,26 @@ class struc_Tile:
         self.block_path = block_path
         self.explored = False
 
+class struc_Assets:
+    def __init__(self):
+        #sprties
+        self.charspritesheet  = obj_Spritesheet("data/reptiles.png")
+        self.enemyspritesheet = obj_Spritesheet("data/enemys.png")
+
+        self.A_PLAYER = self.charspritesheet.get_animation ('o',5 ,16 ,16 ,2 , (32, 32))
+        self.A_ENEMY  = self.enemyspritesheet.get_animation('k',1 ,16 ,16 ,2 ,(32, 32))
+
+        self.S_WALL              = pygame.image.load("data/wall.jpg")
+        self.S_WALLEXPLORED      = pygame.image.load("data/wallunseen.png")
+
+        self.S_FLOOR             = pygame.image.load("data/floor.jpg")
+        self.S_FLOOREXPLORED     = pygame.image.load("data/floorunseen.png")
+
+        #FONTS
+        self.FONT_DEBUG_MESSAGE  = pygame.font.Font("data/joystix.ttf", 16)
+        self.FONT_MESSAGE_TEXT   = pygame.font.Font("data/joystix.ttf", 12)
+
+
 
 # _______  ______  _________ _______  _______ _________ _______
 #(  ___  )(  ___ \ \__    _/(  ____ \(  ____ \\__   __/(  ____ \
@@ -339,18 +359,18 @@ def draw_map(map_to_draw):
 
                 if map_to_draw[x][y].block_path == True:
                     #draw a wall
-                    SURFACE_MAIN.blit(constants.S_WALL, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
+                    SURFACE_MAIN.blit(ASSETS.S_WALL, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
                 else:
                     #draw floor
-                    SURFACE_MAIN.blit(constants.S_FLOOR, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
+                    SURFACE_MAIN.blit(ASSETS.S_FLOOR, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
 
             elif map_to_draw[x][y].explored:
                 if map_to_draw[x][y].block_path == True:
                     #draw a wall
-                    SURFACE_MAIN.blit(constants.S_WALLEXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
+                    SURFACE_MAIN.blit(ASSETS.S_WALLEXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
                 else:
                     #draw floor
-                    SURFACE_MAIN.blit(constants.S_FLOOREXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
+                    SURFACE_MAIN.blit(ASSETS.S_FLOOREXPLORED, (x*constants.CELL_WIDTH, y*constants.CELL_HEIGHT))
 
 def draw_debug():
 
@@ -364,7 +384,7 @@ def draw_messages():
         to_draw = GAME.message_history[-constants.NUM_MESSAGES:]
 
 
-    text_height = helper_text_height(constants.FONT_MESSAGE_TEXT)
+    text_height = helper_text_height(ASSETS.FONT_MESSAGE_TEXT)
 
     start_y = (constants.MAP_HEIGHT * constants.CELL_HEIGHT - (constants.NUM_MESSAGES * text_height)) -5
 
@@ -396,9 +416,9 @@ def draw_text(display_surface, text_to_display, T_coords, text_color, back_color
 def helper_text_objects(incoming_text, incoming_color, incoming_bg):
 
     if incoming_bg:
-        Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color, incoming_bg)
+        Text_surface = ASSETS.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color, incoming_bg)
     else:
-        Text_surface = constants.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color)
+        Text_surface = ASSETS.FONT_DEBUG_MESSAGE.render(incoming_text, False, incoming_color)
 
     return Text_surface, Text_surface.get_rect()
 
@@ -471,7 +491,7 @@ def game_main_loop():
 #
 
 def game_initialize():
-    global SURFACE_MAIN, GAME, PLAYER, ENEMY, FOV_CALCULATE, CLOCK
+    global SURFACE_MAIN, GAME, CLOCK, FOV_CALCULATE, PLAYER, ENEMY, ASSETS
     #initalizes the main window in pygame
     pygame.init()
 
@@ -496,21 +516,17 @@ def game_initialize():
 
     FOV_CALCULATE = True
 
-    ## temp sprites
+    ASSETS = struc_Assets()
 
-    charspritesheet  = obj_Spritesheet("data/reptiles.png")
-    enemyspritesheet = obj_Spritesheet("data/enemys.png")
 
-    A_PLAYER = charspritesheet.get_animation('o',5 ,16 ,16 ,2 , (32, 32))
-    A_ENEMY  = enemyspritesheet.get_image('k',1 ,16 ,16 ,(32, 32))
 
     creature_com1 = com_Creature("greg")
-    PLAYER = obj_Actor(1, 1, "python", A_PLAYER ,animation_speed = 1.0, creature = creature_com1)
+    PLAYER = obj_Actor(1, 1, "python", ASSETS.A_PLAYER ,animation_speed = 1.0, creature = creature_com1)
 
 
     creature_com2 = com_Creature("jackie", death_function = death_monster)
     ai_com = ai_Test()
-    ENEMY  = obj_Actor(15, 15, "crab", A_ENEMY, creature = creature_com2, ai = ai_com)
+    ENEMY  = obj_Actor(15, 15, "crab", ASSETS.A_ENEMY, animation_speed = 1.0, creature = creature_com2, ai = ai_com)
 
     #ai_com2 = ai_Test()
     #creature_com3 = com_Creature("jackie2", death_function = death_monster       )
