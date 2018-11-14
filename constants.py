@@ -1,4 +1,7 @@
 import libtcodpy as libtcod
+import pygame
+
+pygame.init()
 
 #game sizes
 GAME_WIDTH  = 800
@@ -40,3 +43,7 @@ TORCH_RADIUS    = 5
 
 #MESSAGE DEFAULTS
 NUM_MESSAGES = 4
+
+#FONTS
+FONT_DEBUG_MESSAGE  = pygame.font.Font("data/joystix.ttf", 16)
+FONT_MESSAGE_TEXT   = pygame.font.Font("data/joystix.ttf", 12)
