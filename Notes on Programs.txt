@@ -16,3 +16,5 @@ GamePart18	picking up and dropping items
 GamePart19  Menus
 GamePart20  more menu
 GamePart21  using items
+GamePart22  select a tile
+
