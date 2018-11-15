@@ -122,7 +122,7 @@ class obj_Spritesheet:
 
     def get_image(self, column, row, width = constants.CELL_WIDTH, height = constants.CELL_HEIGHT,
                     scale = None):
-        ### scale is s tuple
+        ### scale is a tuple
 
         image_list = []
 
@@ -157,7 +157,6 @@ class obj_Spritesheet:
             #set tranparency to black
             image.set_colorkey(constants.COLOR_BLACK)
 
-
             if scale:
                 (new_w, new_h) = scale
                 image = pygame.transform.scale(image, (new_w, new_h))
@@ -178,12 +177,12 @@ class obj_Spritesheet:
 
 class com_Creature:
     #creatures have health can attack other objects and can die
-    def __init__(self, name_instance, hp=10, death_function = None):
+    def __init__(self, name_instance, max_hp=10, death_function = None):
 
         self.name_instance = name_instance
-        self.maxhp = hp
-        self.hp = hp
+        self.max_hp = max_hp
         self.death_function = death_function
+        self.current_hp = max_hp
 
     def move(self, dx, dy):
 
@@ -193,7 +192,6 @@ class com_Creature:
         #
         if target:
             self.attack(target, 3)
-
 
         if not tile_is_wall and target is None:
             self.owner.x += dx
@@ -205,14 +203,19 @@ class com_Creature:
         target.creature.take_damage(damage)
 
     def take_damage(self, damage):
-        self.hp -= damage
+        self.current_hp -= damage
         #print (self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp))
-        game_message(self.name_instance + "'s health is " + str(self.hp) + "/" + str(self.maxhp), constants.COLOR_RED)
+        game_message(self.name_instance + "'s health is " + str(self.current_hp) + "/" + str(self.max_hp), constants.COLOR_RED)
 
-
-        if self.hp <= 0:
+        if self.current_hp <= 0:
             if self.death_function is not None:
                 self.death_function(self.owner)
+
+    def heal(self, value):
+        self.current_hp += value
+
+        if self.current_hp > self.max_hp:
+            self.current_hp = self.max_hp
 
 #.current_maps com_Item:
 
@@ -231,10 +234,12 @@ class com_Container:
     #get_current_weight()
 
 class com_Item:
-    def __init__(self, weight = 0.0, volume = 0.0):
+    def __init__(self, weight = 0.0, volume = 0.0, use_function = None, value = None):
+
         self.weight = weight
         self.volume = volume
-
+        self.value = value
+        self.use_function = use_function
 
     ## pick_up_Item()
     def pick_up(self, actor):
@@ -247,22 +252,26 @@ class com_Item:
                 game_message("Pickin up")
                 actor.container.inventory.append(self.owner)
                 GAME.current_objects.remove(self.owner)
-                self.container = actor.container
-
+                self.current_container = actor.container
 
     ## drop_Item()
     def drop(self, new_x, new_y):
         GAME.current_objects.append(self.owner)
-        self.container.inventory.remove(self.owner)
+        self.current_container.inventory.remove(self.owner)
         self.owner.x = new_x
         self.owner.y = new_y
         game_message("Item Dropped")
 
+    ## use_Item
+    def use(self):
+        #use the item by producint and effect and removing it
+        if self.use_function:
+            result = self.use_function(self.current_container.owner, self.value)
 
-
-    ## use_Item()
-
-
+        if result is not None:
+            print("use_function failed")
+        else:
+            self.current_container.inventory.remove(self.owner)
 
 
 
@@ -278,7 +287,6 @@ class ai_Test:
     #once per turn, execute
     def take_turn(self):
         self.owner.creature.move(libtcod.random_get_int(0,-1, 1,),libtcod.random_get_int(0,-1, 1,))
-
 
 def death_monster(monster):
     #on death most monster stop moving
@@ -329,7 +337,6 @@ def map_check_for_creatures(x, y, exclude_object = None):
 
                 target = object
 
-
             if target:
                 return target
 
@@ -341,7 +348,6 @@ def map_check_for_creatures(x, y, exclude_object = None):
                 object.creature):
 
                 target = object
-
 
             if target:
                 return target
@@ -385,10 +391,6 @@ def draw_game():
     #draw the map
     draw_map(GAME.current_map)
     #draw the character
-    #SURFACE_MAIN.blit(constants.S_PLAYER,(200,200))
-    #ENEMY.draw()
-    #PLAYER.draw()
-    #Draw all objects
     for obj in GAME.current_objects:
         obj.draw()
 
@@ -397,7 +399,6 @@ def draw_game():
     draw_messages()
 
     #Player is drawn last so it is on top layer of display - play is always on top
-    #update the display
     pygame.display.flip()
 
 def draw_map(map_to_draw):
@@ -437,12 +438,9 @@ def draw_messages():
     else:
         to_draw = GAME.message_history[-constants.NUM_MESSAGES:]
 
-
     text_height = helper_text_height(constants.FONT_MESSAGE_TEXT)
 
     start_y = (constants.MAP_HEIGHT * constants.CELL_HEIGHT - (constants.NUM_MESSAGES * text_height)) -5
-
-
 
     for i, (message,color) in enumerate(to_draw):
 
@@ -492,6 +490,25 @@ def helper_text_width(font):
     return font_rect.width
 
 
+#                       _
+# _ __ ___   __ _  __ _(_) ___
+#| '_ ` _ \ / _` |/ _` | |/ __|
+#| | | | | | (_| | (_| | | (__
+#|_| |_| |_|\__,_|\__, |_|\___|
+#                 |___/
+
+def cast_heal(target, value):
+    if target.creature.current_hp == target.creature.max_hp:
+        game_message(target.creature.name_instance + " the " + target.name_object + " is already at full health!")
+        return "canceled"
+
+    else:
+        game_message(target.creature.name_instance + " the " + target.name_object + " healed for " + str(value) + " health!")
+        target.creature.heal(value)
+        game_message(target.creature.name_instance + "'s health is " + str(target.creature.current_hp) + "/" + str(target.creature.max_hp), constants.COLOR_RED)
+        #print(target.creature.current_hp)
+
+    return None
 
 
 # _______  _______  _
@@ -515,7 +532,6 @@ def menu_pause():
 
     text_height = helper_text_height(menu_font)
     text_width  = len(menu_text) * helper_text_width(menu_font)
-
 
     #menu pauses game and displays message
     menu_close = False
@@ -564,7 +580,6 @@ def menu_inventory():
         local_inventory_surface.fill(constants.COLOR_BLACK)
 
         #register changes
-
         print_list = [obj.name_object for obj in PLAYER.container.inventory]
         events_list = pygame.event.get()
 
@@ -579,11 +594,6 @@ def menu_inventory():
                             mouse_y_rel < menu_height)
 
         mouse_line_selection = int(mouse_y_rel / menu_text_height)
-
-
-#        if mouse_in_window:
-#          #print(mouse_line_selection)
-
         for event in events_list:
 
             if event.type == pygame.KEYDOWN:
@@ -598,9 +608,7 @@ def menu_inventory():
                     if (mouse_in_window and
                         mouse_line_selection <= len(print_list)-1):
 
-                        PLAYER.container.inventory[mouse_line_selection].item.drop(PLAYER.x, PLAYER.y)
-
-
+                        PLAYER.container.inventory[mouse_line_selection].item.use()
         #draw list
         for line, (name) in enumerate(print_list):
             if line == (mouse_line_selection) and mouse_in_window:
@@ -609,17 +617,11 @@ def menu_inventory():
             else:
                 draw_text(local_inventory_surface, name, menu_text_font,
                          (0, 0 + (line * menu_text_height)), menu_text_color)
-
-
-
         #draw menu
         SURFACE_MAIN.blit(local_inventory_surface, (menu_x, menu_y))
 
         CLOCK.tick(constants.GAME_FPS)
         pygame.display.flip()
-
-
-
 
 
 ########################################################################
@@ -640,8 +642,6 @@ def game_main_loop():
 
     player_action = "no-action"
 
-
-
     while not game_quit:
         #player action definition
 
@@ -657,8 +657,6 @@ def game_main_loop():
             for obj in GAME.current_objects:
                 if obj.ai:
                     obj.ai.take_turn()
-
-
 
         #draw the game
         draw_game()
@@ -685,7 +683,6 @@ def game_initialize():
     #initalizes the main window in pygame
     pygame.init()
 
-
     pygame.key.set_repeat(200,70)#set key repeat
     #SURFACE_MAIN = pygame.display.set_mode((constants.GAME_WIDTH,constants.GAME_HEIGHT))
     SURFACE_MAIN = pygame.display.set_mode((constants.MAP_WIDTH*constants.CELL_WIDTH, constants.MAP_HEIGHT*constants.CELL_HEIGHT))
@@ -696,42 +693,25 @@ def game_initialize():
 
     pygame.display.set_caption('Test Game!')
 
-    #GAME.current_map = map_create()
-
-    #GAME.message_history = []
-
-    #test messages
-    #game_message("test message", constants.COLOR_WHITE)
-    #game_message("test message2", constants.COLOR_RED)
-    #game_message("test message3", constants.COLOR_GREY)
-    #game_message("test message4", constants.COLOR_WHITE)
-
     FOV_CALCULATE = True
 
     ASSETS = struc_Assets()
 
-
     container_com1 = com_Container()
-    creature_com1 = com_Creature("greg")
+    creature_com1 = com_Creature("Hero Greg")
     PLAYER = obj_Actor(1, 1, "python", ASSETS.A_PLAYER ,animation_speed = 1.0, creature = creature_com1, container = container_com1)
 
-
-    item_com1 = com_Item()
+    item_com1 = com_Item(value = 4, use_function = cast_heal)
     creature_com2 = com_Creature("jackie", death_function = death_monster)
     ai_com1 = ai_Test()
-    ENEMY  = obj_Actor(15, 15, "smart crab", ASSETS.A_ENEMY, animation_speed = 1.0,
+    ENEMY  = obj_Actor(5, 5, "smart crab", ASSETS.A_ENEMY, animation_speed = 1.0,
                     creature = creature_com2, ai = ai_com1, item = item_com1)
 
-    item_com2 = com_Item()
+    item_com2 = com_Item(value = 5, use_function = cast_heal)
     ai_com2 = ai_Test()
     creature_com3 = com_Creature("bob", death_function = death_monster)
     ENEMY2  = obj_Actor(14, 15, "dumb crab", ASSETS.A_ENEMY, animation_speed = 1.0,
                      creature = creature_com3, ai = ai_com2, item = item_com2)
-
-
-    #ai_com2 = ai_Test()
-    #creature_com3 = com_Creature("jackie2", death_function = death_monster       )
-    #ENEMY2  = obj_Actor(5, 10, "crab", constants.S_ENEMY, creature = creature_com3, ai = ai_com2)
 
     GAME.current_objects = [PLAYER, ENEMY, ENEMY2]
 
@@ -785,15 +765,11 @@ def game_handle_keys():
             if event.key == pygame.K_i:
                 menu_inventory()
 
-
-
     return "no-action"
 
 def game_message(game_msg, msg_color = constants.COLOR_GREY):#T means tuple
 
     GAME.message_history.append((game_msg, msg_color))
-
-
 
 
 # _______  _______ _________ _          _        _______  _______  _______
