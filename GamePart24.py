@@ -24,7 +24,7 @@ class struc_Assets:
     def __init__(self):
         #sprties
         self.charspritesheet  = obj_Spritesheet("data/reptiles.png")
-        self.enemyspritesheet = obj_Spritesheet("data/enemys.png")
+        self.enemyspritesheet = obj_Spritesheet("data/enemies.png")
 
         self.A_PLAYER = self.charspritesheet.get_animation ('o',5 ,16 ,16 ,2 , (32, 32))
         self.A_ENEMY  = self.enemyspritesheet.get_animation('k',1 ,16 ,16 ,2 ,(32, 32))
@@ -352,6 +352,9 @@ def map_check_for_creatures(x, y, exclude_object = None):
             if target:
                 return target
 
+def map_check_for_wall(x, y):
+    incoming_map[x][y].block_path
+
 def map_make_fov(incoming_map):
     global FOV_MAP
 
@@ -544,18 +547,20 @@ def cast_heal(target, value):
 
 def cast_lightning(damage):
 
+    player_location = (PLAYER.x, PLAYER.y)
     #get tile from player
-    point_selected = menu_tile_selection()
+    point_selected = menu_tile_selection(coords_origin = player_location, max_range = 5, penetrate_walls = False)
 
+    if point_selected:
     #convert tile into list of tiles between A -> B
-    list_of_tiles = map_find_line((PLAYER.x, PLAYER.y), point_selected)
+        list_of_tiles = map_find_line(player_location, point_selected)
 
-    #cylye through list and damage eveything in list
-    for i, (x, y) in enumerate (list_of_tiles):
-        target = map_check_for_creatures(x,y)
+        #cylye through list and damage eveything in list
+        for i, (x, y) in enumerate (list_of_tiles):
+            target = map_check_for_creatures(x,y)
 
-        if target and i != 0:
-            target.creature.take_damage(damage)
+            if target:
+                target.creature.take_damage(damage)
 
 # _______  _______  _
 #(       )(  ____ \( (    /||\     /|
@@ -599,7 +604,6 @@ def menu_pause():
         CLOCK.tick(constants.GAME_FPS)
 
         pygame.display.flip()
-
 
 def menu_inventory():
 
@@ -669,7 +673,7 @@ def menu_inventory():
         CLOCK.tick(constants.GAME_FPS)
         pygame.display.flip()
 
-def menu_tile_selection():
+def menu_tile_selection(coords_origin = None, max_range = None, penetrate_walls = True):
 
     menu_close = False
 
@@ -677,33 +681,42 @@ def menu_tile_selection():
 
         #get mouse pos
         mouse_x, mouse_y = pygame.mouse.get_pos()
-
         #get button press
         events_list = pygame.event.get()
-
         #mouse map selection
         map_coord_x = int(mouse_x/constants.CELL_WIDTH)
         map_coord_y = int(mouse_y/constants.CELL_HEIGHT)
+        valid_tiles = []
+        if coords_origin:
+            full_list_tiles = map_find_line(coords_origin, (map_coord_x,map_coord_y))
+
+            for i, (x, y) in enumerate(full_list_tiles):
+                valid_tiles.append((x,y))
+
+                if max_range and i == max_range - 1:
+                    break
+
+                if not penetrate_walls and GAME.current_map[x][y].block_path:
+                        break
+        else:
+            valid_tiles=[(map_coord_x, map_coord_y)]
 
         #return map_coords when left mouse click
         for event in events_list:
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_l:
                     menu_close = True
-
             if event.type == pygame.MOUSEBUTTONDOWN:
-
                 if event.button == 1:
                     #returns coord selected
-                    return (map_coord_x,map_coord_y)
-
+                    return (valid_tiles[-1])
 
         #draw game
         draw_game()
 
         #draw rectangle at mouse pos on top of game
-        draw_tile_rect((map_coord_x,map_coord_y))
+        for (tile_x, tile_y) in valid_tiles:
+            draw_tile_rect((tile_x, tile_y))
 
         pygame.display.flip()
 
