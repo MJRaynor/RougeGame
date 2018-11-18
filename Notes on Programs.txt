@@ -20,3 +20,4 @@ GamePart22  select a tile
 GamePart23  lightning pt 1
 GamePart24  lightning pt 2
 GamePart25  fireball spell
+GamePart26  confusion spell

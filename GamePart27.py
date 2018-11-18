@@ -1,5 +1,6 @@
 import pygame,sys
 import libtcodpy as libtcod
+import math
 
 #game fi#les
 import constants
@@ -101,6 +102,24 @@ class obj_Actor:
                         self.sprite_image += 1
 
                 SURFACE_MAIN.blit(self.animation[self.sprite_image], (self.x*constants.CELL_WIDTH, self.y*constants.CELL_HEIGHT))
+
+    def distance_to(self, other):
+        dx = other.x - self.x
+        dy = other.y - self.y
+
+        return math.sqrt(dx ** 2 + dy** 2)
+
+    def move_towards(self, other):
+        dx = other.x - self.x
+        dy = other.y - self.y
+        distance = math.sqrt(dx ** 2 + dy** 2)
+
+        dx = int(round(dx/distance))
+        dy  = int(round(dy/distance))
+
+        self.creature.move(dx, dy)
+
+
 
 class obj_Game:
     def __init__(self):
@@ -283,10 +302,40 @@ class com_Item:
 #   /__/     \__\ |__|
 #
 
-class ai_Test:
+class ai_Confuse:
     #once per turn, execute
+
+    def __init__(self, old_ai, num_turns):
+        self.old_ai = old_ai
+        self.num_turns = num_turns
+
     def take_turn(self):
-        self.owner.creature.move(libtcod.random_get_int(0,-1, 1,),libtcod.random_get_int(0,-1, 1,))
+
+        if self.num_turns > 0:
+            self.owner.creature.move(libtcod.random_get_int(0,-1, 1,),libtcod.random_get_int(0,-1, 1,))
+            self.num_turns -= 1
+
+        else:
+            self.owner.ai = self.old_ai
+            game_message("The creature is back to normal!", constants.COLOR_GREEN)
+
+class ai_Chase:
+    #basic monster AI which tries to harm player
+
+    def take_turn(self):
+
+        monster = self.owner
+
+        if libtcod.map_is_in_fov(FOV_MAP, monster.y, monster.y):
+            #move towards play if far away
+            if monster.distance_to(PLAYER) >= 2:
+                #move towards player
+                self.owner.move_towards(PLAYER)
+
+            #if close enough, attack player
+            elif PLAYER.creature.current_hp > 0:
+                monster.creature.attack(PLAYER, 3)
+
 
 def death_monster(monster):
     #on death most monster stop moving
@@ -486,15 +535,18 @@ def draw_messages():
         draw_text(SURFACE_MAIN, message, constants.FONT_MESSAGE_TEXT,
             (0, start_y + (i * text_height)), color, constants.COLOR_BLACK)
 
-def draw_text(display_surface, text_to_display, font, T_coords, text_color, back_color = None):
+def draw_text(display_surface, text_to_display, font, coords, text_color, back_color = None, center = False):
     #T stands for touple, this function takes in text and displayes it on display_surface
     text_surf, text_rect = helper_text_objects(text_to_display, font, text_color, back_color)
 
-    text_rect.topleft = T_coords
+    if not center:
+        text_rect.topleft = coords
+    else:
+        text_rect.center = coords
 
     display_surface.blit(text_surf, text_rect)
 
-def draw_tile_rect(coords, tile_color = None, tile_alpha = None):
+def draw_tile_rect(coords, tile_color = None, tile_alpha = None, mark = None):
 
     x, y = coords
 
@@ -509,6 +561,12 @@ def draw_tile_rect(coords, tile_color = None, tile_alpha = None):
     new_surface = pygame.Surface((constants.CELL_WIDTH, constants.CELL_HEIGHT))
     new_surface.fill(local_color)
     new_surface.set_alpha(local_alpha)
+
+    if mark:
+        draw_text(new_surface, mark, font = constants.FONT_CURSOR_TEXT,
+                  coords = (constants.CELL_WIDTH/2, constants.CELL_HEIGHT/2),
+                  text_color = constants.COLOR_BLACK, center = True)
+
 
     SURFACE_MAIN.blit(new_surface, (new_x, new_y))
 
@@ -617,7 +675,23 @@ def cast_fireball():
         if creature_hit:
             game_message("The monster howls out in pain!", constants.COLOR_RED)
 
+def cast_confusion():
 
+    #select tile
+    point_selected = menu_tile_selection()
+
+    #get target from tile
+    if point_selected:
+        tile_x, tile_y = point_selected
+        target = map_check_for_creatures(tile_x, tile_y)
+        #temp confuse target
+        if target:
+            oldai = target.ai
+
+            target.ai = ai_Confuse(old_ai = oldai, num_turns = 5)
+            target.ai.owner = target
+
+            game_message("The creature is confused!", constants.COLOR_GREEN)
 
 
 
@@ -783,7 +857,10 @@ def menu_tile_selection(coords_origin = None, max_range = None, radius = None, p
 
         #draw rectangle at mouse pos on top of game
         for (tile_x, tile_y) in valid_tiles:
-            draw_tile_rect(coords = (tile_x, tile_y))
+            if (tile_x, tile_y) == valid_tiles[-1]:
+                draw_tile_rect(coords = (tile_x, tile_y), mark = "X")
+            else:
+                draw_tile_rect(coords = (tile_x, tile_y))
 
         if radius:
             area_effect = map_find_raduis(valid_tiles[-1], radius)
@@ -882,12 +959,12 @@ def game_initialize():
 
     item_com1 = com_Item(value = 4, use_function = cast_heal)
     creature_com2 = com_Creature("jackie", death_function = death_monster)
-    ai_com1 = ai_Test()
+    ai_com1 = ai_Chase()
     ENEMY  = obj_Actor(5, 5, "smart crab", ASSETS.A_ENEMY, animation_speed = 1.0,
                     creature = creature_com2, ai = ai_com1, item = item_com1)
 
     item_com2 = com_Item(value = 5, use_function = cast_heal)
-    ai_com2 = ai_Test()
+    ai_com2 = ai_Chase()
     creature_com3 = com_Creature("bob", death_function = death_monster)
     ENEMY2  = obj_Actor(14, 15, "dumb crab", ASSETS.A_ENEMY, animation_speed = 1.0,
                      creature = creature_com3, ai = ai_com2, item = item_com2)
@@ -945,7 +1022,7 @@ def game_handle_keys():
                 menu_inventory()
 
             if event.key == pygame.K_l:
-                cast_fireball()
+                cast_confusion()
 
     return "no-action"
 
