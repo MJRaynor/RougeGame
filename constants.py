@@ -49,3 +49,10 @@ NUM_MESSAGES = 4
 FONT_DEBUG_MESSAGE  = pygame.font.Font("data/joystix.ttf", 16)
 FONT_MESSAGE_TEXT   = pygame.font.Font("data/joystix.ttf", 12)
 FONT_CURSOR_TEXT   = pygame.font.Font("data/joystix.ttf", CELL_HEIGHT)
+
+
+#Depths
+DEPTH_PLAYER         = -100
+DEPTH_ITEM          = 1
+DEPTH_CREATURES     = 2
+DEPTH_CORPSE        = 100
