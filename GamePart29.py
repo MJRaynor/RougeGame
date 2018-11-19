@@ -24,24 +24,29 @@ class struc_Tile:
 class struc_Assets:
     def __init__(self):
         #sprties
-        self.charspritesheet  = obj_Spritesheet("data/reptiles.png")
-        self.enemyspritesheet = obj_Spritesheet("data/enemies.png")
+        self.reptile          = obj_Spritesheet("data/graphics/Characters/Reptile.png")
+        self.aquatic          = obj_Spritesheet("data/graphics/Characters/Aquatic.png")
+        self.wall             = obj_Spritesheet("data/graphics/Objects/Wall.png")
+        self.floor            = obj_Spritesheet("data/graphics/Objects/Floor.png")
+        self.shield           = obj_Spritesheet("data/graphics/Items/Shield.png")
+        self.medwep           = obj_Spritesheet("data/graphics/Items/MedWep.png")
+        self.scroll           = obj_Spritesheet("data/graphics/Items/Scroll.png")
 
-        self.A_PLAYER = self.charspritesheet.get_animation ('o',5 ,16 ,16 ,2 , (32, 32))
-        self.A_ENEMY  = self.enemyspritesheet.get_animation('k',1 ,16 ,16 ,2 ,(32, 32))
+        self.A_PLAYER = self.reptile.get_animation ('o',5 ,16 ,16 ,2 , (32, 32))
+        self.A_ENEMY  = self.aquatic.get_animation('k',1 ,16 ,16 ,2 ,(32, 32))
 
-        self.S_WALL              = pygame.image.load("data/wall.jpg")
-        self.S_WALLEXPLORED      = pygame.image.load("data/wallunseen.png")
+        self.S_WALL              = self.wall.get_image('d', 7, 16 ,16, (32 ,32))[0]
+        self.S_WALLEXPLORED      = self.wall.get_image('d', 13, 16 ,16, (32 ,32))[0]
 
-        self.S_FLOOR             = pygame.image.load("data/floor.jpg")
-        self.S_FLOOREXPLORED     = pygame.image.load("data/floorunseen.png")
+        self.S_FLOOR             = self.floor.get_image('b', 8, 16 ,16, (32 ,32))[0]
+        self.S_FLOOREXPLORED     = self.floor.get_image('b', 14, 16 ,16, (32 ,32))[0]
 
         #items
-        self.S_SWORD             = [pygame.transform.scale(pygame.image.load("data/sword.png"),
-                                    (constants.CELL_WIDTH,constants.CELL_HEIGHT))]
-        self.SHIELD             = [pygame.transform.scale(pygame.image.load("data/shield.png"),
-                                    (constants.CELL_WIDTH,constants.CELL_HEIGHT))]
-
+        self.S_SWORD               = self.medwep.get_image('a', 1, 16 ,16, (32 ,32))
+        self.S_SHIELD              = self.shield.get_image('a', 1, 16 ,16, (32 ,32))
+        self.S_SCROLL_01           = self.scroll.get_image('e', 1, 16 ,16, (32 ,32))
+        self.S_SCROLL_02           = self.scroll.get_image('c', 2, 16 ,16, (32 ,32))
+        self.S_SCROLL_03           = self.scroll.get_image('d', 6, 16 ,16, (32 ,32))
 
 
 # _______  ______  _________ _______  _______ _________ _______
@@ -443,15 +448,13 @@ def death_monster(monster):
     monster.creature = None
     monster.ai = None
 
-
-#_______  _______  _______
-#(       )(  ___  )(  ____ )
-#| () () || (   ) || (    )|
-#| || || || (___) || (____)|
-#| |(_)| ||  ___  ||  _____)
-#| |   | || (   ) || (
-#| )   ( || )   ( || )
-#|/     \||/     \||/
+#
+#
+#  /\/\   __ _ _ __
+# /    \ / _` | '_ \
+#/ /\/\ \ (_| | |_) |
+#\/    \/\__,_| .__/
+#             |_|
 #
 
 def map_create():
@@ -563,15 +566,13 @@ def map_find_raduis(coords, radius):
     return tile_list
 
 
-
-# ______   _______  _______
-#(  __  \ (  ____ )(  ___  )|\     /|
-#| (  \  )| (    )|| (   ) || )   ( |
-#| |   ) || (____)|| (___) || | _ | |
-#| |   | ||     __)|  ___  || |( )| |
-#| |   ) || (\ (   | (   ) || || || |
-#| (__/  )| ) \ \__| )   ( || () () |
-#(______/ |/   \__/|/     \|(_______)
+#
+#    ___
+#   /   \_ __ __ ___      __
+#  / /\ / '__/ _` \ \ /\ / /
+# / /_//| | | (_| |\ V  V /
+#/___,' |_|  \__,_| \_/\_/
+#
 #
 
 def draw_game():
@@ -669,13 +670,13 @@ def draw_tile_rect(coords, tile_color = None, tile_alpha = None, mark = None):
     SURFACE_MAIN.blit(new_surface, (new_x, new_y))
 
 
-
-# __    __   _______  __      .______    _______ .______
-#|  |  |  | |   ____||  |     |   _  \  |   ____||   _  \
-#|  |__|  | |  |__   |  |     |  |_)  | |  |__   |  |_)  |
-#|   __   | |   __|  |  |     |   ___/  |   __|  |      /
-#|  |  |  | |  |____ |  `----.|  |      |  |____ |  |\  \----.
-#|__|  |__| |_______||_______|| _|      |_______|| _| `._____|
+#
+#            _
+#  /\  /\___| |_ __   ___ _ __
+# / /_/ / _ \ | '_ \ / _ \ '__|
+#/ __  /  __/ | |_) |  __/ |
+#\/ /_/ \___|_| .__/ \___|_|
+#             |_|
 #
 
 def helper_text_objects(incoming_text, incoming_font, incoming_color, incoming_bg):
@@ -701,13 +702,14 @@ def helper_text_width(font):
 
     return font_rect.width
 
-
-#                       _
-# _ __ ___   __ _  __ _(_) ___
-#| '_ ` _ \ / _` |/ _` | |/ __|
-#| | | | | | (_| | (_| | | (__
-#|_| |_| |_|\__,_|\__, |_|\___|
-#                 |___/
+#
+#                    _
+#  /\/\   __ _  __ _(_) ___
+# /    \ / _` |/ _` | |/ __|
+#/ /\/\ \ (_| | (_| | | (__
+#\/    \/\__,_|\__, |_|\___|
+#              |___/
+#
 
 def cast_heal(target, value):
     if target.creature.current_hp == target.creature.max_hp:
@@ -722,13 +724,13 @@ def cast_heal(target, value):
 
     return None
 
-def cast_lightning():
+def cast_lightning(caster, T_damage_maxrange):
 
-    damage = 10
+    damage, m_range = T_damage_maxrange
 
     player_location = (PLAYER.x, PLAYER.y)
     #get tile from player
-    point_selected = menu_tile_selection(coords_origin = player_location, max_range = 5, penetrate_walls = False)
+    point_selected = menu_tile_selection(coords_origin = player_location, max_range = m_range, penetrate_walls = False)
 
     if point_selected:
     #convert tile into list of tiles between A -> B
@@ -741,11 +743,10 @@ def cast_lightning():
             if target:
                 target.creature.take_damage(damage)
 
-def cast_fireball():
-    damage    = 5
-    local_radius    = 1
-    max_r = 4
-    player_location = (PLAYER.x, PLAYER.y)
+def cast_fireball(caster, T_damage_radius_range):
+    damage, local_radius, max_r = T_damage_radius_range
+
+    player_location = (caster.x, caster.y)
 
     #get target tile
     point_selected = menu_tile_selection(coords_origin = player_location,
@@ -772,7 +773,7 @@ def cast_fireball():
         if creature_hit:
             game_message("The monster howls out in pain!", constants.COLOR_RED)
 
-def cast_confusion():
+def cast_confusion(caster, effect_length):
 
     #select tile
     point_selected = menu_tile_selection()
@@ -785,21 +786,18 @@ def cast_confusion():
         if target:
             oldai = target.ai
 
-            target.ai = ai_Confuse(old_ai = oldai, num_turns = 5)
+            target.ai = ai_Confuse(old_ai = oldai, num_turns = effect_length)
             target.ai.owner = target
 
             game_message("The creature is confused!", constants.COLOR_GREEN)
 
-
-
-# _______  _______  _
-#(       )(  ____ \( (    /||\     /|
-#| () () || (    \/|  \  ( || )   ( |
-#| || || || (__    |   \ | || |   | |
-#| |(_)| ||  __)   | (\ \) || |   | |
-#| |   | || (      | | \   || |   | |
-#| )   ( || (____/\| )  \  || (___) |
-#|/     \|(_______/|/    )_)(_______)
+#
+#
+#  /\/\   ___ _ __  _   _
+# /    \ / _ \ '_ \| | | |
+#/ /\/\ \  __/ | | | |_| |
+#\/    \/\___|_| |_|\__,_|
+#
 #
 
 def menu_pause():
@@ -889,6 +887,7 @@ def menu_inventory():
                         mouse_line_selection <= len(print_list)-1):
 
                         PLAYER.container.inventory[mouse_line_selection].item.use()
+                        menu_close = True
         #draw list
         for line, (name) in enumerate(print_list):
             if line == (mouse_line_selection) and mouse_in_window:
@@ -973,18 +972,99 @@ def menu_tile_selection(coords_origin = None, max_range = None, radius = None, p
 
         CLOCK.tick(constants.GAME_FPS)
 
-
-########################################################################
-#   _______  _______  _______  _______    _        _______  _______  _______
-#  (  ____ \(  ___  )(       )(  ____ \  ( \      (  ___  )(  ___  )(  ____ )
-#  | (    \/| (   ) || () () || (    \/  | (      | (   ) || (   ) || (    )|
-#  | |      | (___) || || || || (__      | |      | |   | || |   | || (____)|
-#  | | ____ |  ___  || |(_)| ||  __)     | |      | |   | || |   | ||  _____)
-#  | | \_  )| (   ) || |   | || (        | |      | |   | || |   | || (
-#  | (___) || )   ( || )   ( || (____/\  | (____/\| (___) || (___) || )
-#  (_______)|/     \||/     \|(_______/  (_______/(_______)(_______)|/
 #
-########################################################################
+#   ___                          _
+#  / _ \___ _ __   ___ _ __ __ _| |_ ___  _ __ ___
+# / /_\/ _ \ '_ \ / _ \ '__/ _` | __/ _ \| '__/ __|
+#/ /_\\  __/ | | |  __/ | | (_| | || (_) | |  \__ \
+#\____/\___|_| |_|\___|_|  \__,_|\__\___/|_|  |___/
+#
+#
+
+def gen_item(coords):
+    #global GAME
+
+    random_num = libtcod.random_get_int(0, 1, 5)
+
+    if random_num   == 1: new_item = gen_scroll_lightning(coords)
+    elif random_num == 2: new_item = gen_scroll_fireball(coords)
+    elif random_num == 3: new_item = gen_scroll_confusion(coords)
+    elif random_num == 4: new_item = gen_weapon_sword(coords)
+    elif random_num == 5: new_item = gen_armor_shield(coords)
+
+    GAME.current_objects.append(new_item)
+
+def gen_scroll_lightning(coords):
+
+    x,y = coords
+
+    damage  = libtcod.random_get_int(0, 5, 10)
+    m_range = libtcod.random_get_int(0, 7, 10)
+
+    item_com = com_Item(use_function = cast_lightning, value = (damage,m_range))
+
+    return_object = obj_Actor(x, y, "Lightning Scroll", animation = ASSETS.S_SCROLL_01, item = item_com)
+
+    return return_object
+
+def gen_scroll_fireball(coords):
+
+    x,y = coords
+
+    damage  = libtcod.random_get_int(0, 2, 5)
+    radius  = 1
+    m_range = libtcod.random_get_int(0, 5, 12)
+
+    item_com = com_Item(use_function = cast_fireball, value = (damage, radius, m_range))
+
+    return_object = obj_Actor(x, y, "Fireball Scroll", animation = ASSETS.S_SCROLL_02, item = item_com)
+
+    return return_object
+
+def gen_scroll_confusion(coords):
+
+    x,y = coords
+
+    effect_length  = libtcod.random_get_int(0, 4, 10)
+
+    item_com = com_Item(use_function = cast_confusion, value = (effect_length))
+
+    return_object = obj_Actor(x, y, "Confuison Scroll", animation = ASSETS.S_SCROLL_03, item = item_com)
+
+    return return_object
+
+def gen_weapon_sword(coords):
+
+    x,y = coords
+
+    bonus = libtcod.random_get_int(0, 1, 2)
+
+    equipment_com = com_Equipment(attack_bonus = bonus)
+
+    return_object = obj_Actor(x, y, "Sword", animation = ASSETS.S_SWORD, equipment = equipment_com)
+
+    return return_object
+
+def gen_armor_shield(coords):
+
+    x,y = coords
+
+    bonus = libtcod.random_get_int(0, 1, 2)
+
+    equipment_com = com_Equipment(defense_bonus = bonus)
+
+    return_object = obj_Actor(x, y, "Shield", animation = ASSETS.S_SHIELD, equipment = equipment_com)
+
+    return return_object
+
+#
+#   ___   _              __     __
+#  / _ \ /_\    /\/\    /__\   / /  ___   ___  _ __
+# / /_\///_\\  /    \  /_\    / /  / _ \ / _ \| '_ \
+#/ /_\\/  _  \/ /\/\ \//__   / /__| (_) | (_) | |_) |
+#\____/\_/ \_/\/    \/\__/   \____/\___/ \___/| .__/
+#                                             |_|
+#
 
 def game_main_loop():
     #main game loop
@@ -1019,15 +1099,13 @@ def game_main_loop():
     pygame.quit()
     sys.exit()
 
-
-# _______  _______  _______  _______   _________ _       __________________
-#(  ____ \(  ___  )(       )(  ____ \  \__   __/( (    /|\__   __/\__   __/
-#| (    \/| (   ) || () () || (    \/     ) (   |  \  ( |   ) (      ) (
-#| |      | (___) || || || || (__         | |   |   \ | |   | |      | |
-#| | ____ |  ___  || |(_)| ||  __)        | |   | (\ \) |   | |      | |
-#| | \_  )| (   ) || |   | || (           | |   | | \   |   | |      | |
-#| (___) || )   ( || )   ( || (____/\  ___) (___| )  \  |___) (___   | |
-#(_______)|/     \||/     \|(_______/  \_______/|/    )_)\_______/   )_(
+#
+#   ___   _              __   _       _ _
+#  / _ \ /_\    /\/\    /__\ (_)_ __ (_) |_
+# / /_\///_\\  /    \  /_\   | | '_ \| | __|
+#/ /_\\/  _  \/ /\/\ \//__   | | | | | | |_
+#\____/\_/ \_/\/    \/\__/   |_|_| |_|_|\__|
+#
 #
 
 def game_initialize():
@@ -1066,20 +1144,24 @@ def game_initialize():
                      creature = creature_com3, ai = ai_com2, item = item_com2)
 
     #create a sword
-    equipment_com1 = com_Equipment(attack_bonus = 2, slot = "hand_right")
-    SWORD = obj_Actor(2, 2, "Short Sword", ASSETS.S_SWORD,
-                     equipment = equipment_com1)
-
-    equipment_com3 = com_Equipment(attack_bonus = 3, slot = "hand_right")
-    SWORD2 = obj_Actor(2, 1, "Short Sword", ASSETS.S_SWORD,
-                     equipment = equipment_com3)
-
+    #equipment_com1 = com_Equipment(attack_bonus = 2, slot = "hand_right")
+    #SWORD = obj_Actor(2, 2, "Short Sword", ASSETS.S_SWORD,
+    #                 equipment = equipment_com1)
     #create a shield
-    equipment_com2 = com_Equipment(defense_bonus = 2, slot = "hand_left")
-    SHIELD = obj_Actor(2, 3, "Shield", ASSETS.SHIELD,
-                     equipment = equipment_com2)
+    #equipment_com2 = com_Equipment(defense_bonus = 2, slot = "hand_left")
+    #SHIELD = obj_Actor(2, 3, "Shield", ASSETS.SHIELD,
+    #                 equipment = equipment_com2)
+    GAME.current_objects = [PLAYER, ENEMY, ENEMY2]
+    #create scrolls
+    #SCROLL_1 = gen_lightning_scroll((2, 2))
+    #SCROLL_2 = gen_fireball_scroll((2, 3))
+    #SCROLL_3 = gen_confusion_scroll((2, 4))
+    gen_item((2, 2))
+    gen_item((2, 3))
+    gen_item((2, 4))
 
-    GAME.current_objects = [PLAYER, ENEMY, ENEMY2, SWORD, SHIELD, SWORD2]
+
+
 
 def game_handle_keys():
     global FOV_CALCULATE
@@ -1140,15 +1222,14 @@ def game_message(game_msg, msg_color = constants.COLOR_GREY):#T means tuple
 
     GAME.message_history.append((game_msg, msg_color))
 
-
-# _______  _______ _________ _          _        _______  _______  _______
-#(       )(  ___  )\__   __/( (    /|  ( \      (  ___  )(  ___  )(  ____ )
-#| () () || (   ) |   ) (   |  \  ( |  | (      | (   ) || (   ) || (    )|
-#| || || || (___) |   | |   |   \ | |  | |      | |   | || |   | || (____)|
-#| |(_)| ||  ___  |   | |   | (\ \) |  | |      | |   | || |   | ||  _____)
-#| |   | || (   ) |   | |   | | \   |  | |      | |   | || |   | || (
-#| )   ( || )   ( |___) (___| )  \  |  | (____/\| (___) || (___) || )
-#|/     \||/     \|\_______/|/    )_)  (_______/(_______)(_______)|/
+#
+#             _         __
+#  /\/\   __ _(_)_ __   / /  ___   ___  _ __
+# /    \ / _` | | '_ \ / /  / _ \ / _ \| '_ \
+#/ /\/\ \ (_| | | | | / /__| (_) | (_) | |_) |
+#\/    \/\__,_|_|_| |_\____/\___/ \___/| .__/
+#                                      |_|
+#
 
 if __name__ == '__main__':
     game_initialize()
