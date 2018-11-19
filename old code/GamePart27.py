@@ -36,8 +36,9 @@ class struc_Assets:
         self.S_FLOOR             = pygame.image.load("data/floor.jpg")
         self.S_FLOOREXPLORED     = pygame.image.load("data/floorunseen.png")
 
-
-
+        #items
+        self.S_SWORD             = [pygame.image.load("data/sword.png")]
+        #self.SHIELD              = pygame.image.load("data/shield.png")
 
 
 # _______  ______  _________ _______  _______ _________ _______
@@ -51,7 +52,8 @@ class struc_Assets:
 #
 
 class obj_Actor:
-    def __init__(self, x, y, name_object, animation, animation_speed = .5, creature = None, ai = None, container = None, item = None):
+    def __init__(self, x, y, name_object, animation, animation_speed = .5, creature = None, ai = None,
+                 container = None, item = None, equipment = None):
         self.x = x
         self.y = y
         self.name_object = name_object
@@ -77,6 +79,13 @@ class obj_Actor:
 
         self.item = item
         if self.item:
+            self.item.owner = self
+
+        self.equipment = equipment
+        if self.equipment:
+            self.equipment.owner = self
+
+            self.item = com_Item()
             self.item.owner = self
 
 
@@ -118,8 +127,6 @@ class obj_Actor:
         dy  = int(round(dy/distance))
 
         self.creature.move(dx, dy)
-
-
 
 class obj_Game:
     def __init__(self):
@@ -184,6 +191,7 @@ class obj_Spritesheet:
 
         return image_list
 
+
 #
 #(  ____ \(  ___  )(       )(  ____ )(  ___  )( (    /|(  ____ \( (    /|
 #| (    \/| (   ) || () () || (    )|| (   ) ||  \  ( || (    \/|  \  ( |
@@ -236,9 +244,6 @@ class com_Creature:
         if self.current_hp > self.max_hp:
             self.current_hp = self.max_hp
 
-#.current_maps com_Item:
-
-
 class com_Container:
     def __init__(self, volume = 10.0, inventory = []):
         self.inventory = inventory
@@ -283,6 +288,10 @@ class com_Item:
 
     ## use_Item
     def use(self):
+
+        if self.owner.equipment:
+            self.owner.equipment.toggle_equip()
+            return
         #use the item by producint and effect and removing it
         if self.use_function:
             result = self.use_function(self.current_container.owner, self.value)
@@ -291,6 +300,38 @@ class com_Item:
             print("use_function failed")
         else:
             self.current_container.inventory.remove(self.owner)
+
+class com_Equipment:
+
+    def __init__ (self, attack_bonus = None , defense_bonus = None , slot = None):
+
+        self.attack_bonus = attack_bonus
+        self.defense_bonus = defense_bonus
+        self.slot = slot
+
+        self.equipped = False
+
+    def toggle_equip(self):
+
+        if self.equipped:
+            self.unequip()
+        else:
+            self.equip()
+
+    def equip():
+        #equip item
+        self.equipped = True
+
+        game_message("Item is equipped")
+
+    def unequip():
+
+        self.equipped = False
+
+        game_message("Item is Unequipped")
+
+
+
 
 
 
@@ -335,7 +376,6 @@ class ai_Chase:
             #if close enough, attack player
             elif PLAYER.creature.current_hp > 0:
                 monster.creature.attack(PLAYER, 3)
-
 
 def death_monster(monster):
     #on death most monster stop moving
@@ -488,7 +528,6 @@ def draw_game():
 
     draw_messages()
 
-
 def draw_map(map_to_draw):
 
     for x in range(0,constants.MAP_WIDTH):
@@ -588,7 +627,6 @@ def helper_text_objects(incoming_text, incoming_font, incoming_color, incoming_b
         Text_surface = incoming_font.render(incoming_text, False, incoming_color)
 
     return Text_surface, Text_surface.get_rect()
-
 
 def helper_text_height(font):
 
@@ -874,10 +912,6 @@ def menu_tile_selection(coords_origin = None, max_range = None, radius = None, p
         CLOCK.tick(constants.GAME_FPS)
 
 
-
-
-
-
 ########################################################################
 #   _______  _______  _______  _______    _        _______  _______  _______
 #  (  ____ \(  ___  )(       )(  ____ \  ( \      (  ___  )(  ___  )(  ____ )
@@ -969,7 +1003,13 @@ def game_initialize():
     ENEMY2  = obj_Actor(14, 15, "dumb crab", ASSETS.A_ENEMY, animation_speed = 1.0,
                      creature = creature_com3, ai = ai_com2, item = item_com2)
 
-    GAME.current_objects = [PLAYER, ENEMY, ENEMY2]
+    #create a sword
+    equipment_com1 = com_Equipment()
+    SWORD = obj_Actor(2, 2, "Short Sword", ASSETS.S_SWORD,
+                     equipment = equipment_com1)
+
+
+    GAME.current_objects = [PLAYER, ENEMY, ENEMY2, SWORD]
 
 def game_handle_keys():
     global FOV_CALCULATE
