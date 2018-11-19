@@ -31,9 +31,12 @@ class struc_Assets:
         self.shield           = obj_Spritesheet("data/graphics/Items/Shield.png")
         self.medwep           = obj_Spritesheet("data/graphics/Items/MedWep.png")
         self.scroll           = obj_Spritesheet("data/graphics/Items/Scroll.png")
+        self.flesh           = obj_Spritesheet("data/graphics/Items/Flesh.png")
 
-        self.A_PLAYER = self.reptile.get_animation ('o',5 ,16 ,16 ,2 , (32, 32))
-        self.A_ENEMY  = self.aquatic.get_animation('k',1 ,16 ,16 ,2 ,(32, 32))
+        #animataions
+        self.A_PLAYER    = self.reptile.get_animation('o',5 ,16 ,16 ,2 , (32, 32))
+        self.A_SNAKE_01  = self.reptile.get_animation('e',5 ,16 ,16 ,2 ,(32, 32))
+        self.A_SNAKE_02  = self.reptile.get_animation('k',5 ,16 ,16 ,2 ,(32, 32))
 
         self.S_WALL              = self.wall.get_image('d', 7, 16 ,16, (32 ,32))[0]
         self.S_WALLEXPLORED      = self.wall.get_image('d', 13, 16 ,16, (32 ,32))[0]
@@ -47,6 +50,7 @@ class struc_Assets:
         self.S_SCROLL_01           = self.scroll.get_image('e', 1, 16 ,16, (32 ,32))
         self.S_SCROLL_02           = self.scroll.get_image('c', 2, 16 ,16, (32 ,32))
         self.S_SCROLL_03           = self.scroll.get_image('d', 6, 16 ,16, (32 ,32))
+        self.S_FLESH_01            = self.flesh.get_image('b', 4, 16 ,16, (32 ,32))
 
 
 # _______  ______  _________ _______  _______ _________ _______
@@ -441,10 +445,11 @@ class ai_Chase:
             elif PLAYER.creature.current_hp > 0:
                 monster.creature.attack(PLAYER)
 
-def death_monster(monster):
+def death_snake(monster):
     #on death most monster stop moving
     #print (monster.creature.name_instance + " is dead!")
     game_message(monster.creature.name_instance + " is dead!", constants.COLOR_GREY)
+    monster.animation = ASSETS.S_FLESH_01
     monster.creature = None
     monster.ai = None
 
@@ -980,7 +985,21 @@ def menu_tile_selection(coords_origin = None, max_range = None, radius = None, p
 #\____/\___|_| |_|\___|_|  \__,_|\__\___/|_|  |___/
 #
 #
+## Player
+def gen_player(coords):
+    x, y = coords
 
+    container_com = com_Container()
+
+    creature_com = com_Creature("Hero Greg", base_atk = 4)
+
+    player = obj_Actor(x, y, "python", ASSETS.A_PLAYER ,
+                       animation_speed = 1.0,
+                       creature = creature_com,
+                       container = container_com)
+    return player
+
+#Items
 def gen_item(coords):
     #global GAME
 
@@ -1057,6 +1076,43 @@ def gen_armor_shield(coords):
 
     return return_object
 
+#Enemies
+
+def gen_enemy(coords):
+    random_num = libtcod.random_get_int(0, 1, 100)
+
+    if random_num   <= 15: new_enemy = gen_snake_cobra(coords)
+    else: new_enemy = gen_snake_anaconda(coords)
+
+    GAME.current_objects.append(new_enemy)
+
+def gen_snake_anaconda(coords):
+    x, y = coords
+
+    creature_com = com_Creature("jackie", death_function = death_snake)
+    ai_com = ai_Chase()
+
+    snake  = obj_Actor(x, y, "Anaconda",
+                       ASSETS.A_SNAKE_01,
+                       animation_speed = 1.0,
+                       creature = creature_com,
+                       ai = ai_com)
+    return snake
+
+
+def gen_snake_cobra(coords):
+    x, y = coords
+
+    creature_com = com_Creature("bob", death_function = death_snake)
+    ai_com = ai_Chase()
+
+    snake  = obj_Actor(x, y, "Cobra",
+                       ASSETS.A_SNAKE_02,
+                       animation_speed = 1.0,
+                       creature = creature_com,
+                       ai = ai_com)
+    return snake
+
 #
 #   ___   _              __     __
 #  / _ \ /_\    /\/\    /__\   / /  ___   ___  _ __
@@ -1127,22 +1183,19 @@ def game_initialize():
 
     ASSETS = struc_Assets()
 
-    container_com1 = com_Container()
-    creature_com1 = com_Creature("Hero Greg", base_atk = 4)
-    PLAYER = obj_Actor(1, 1, "python", ASSETS.A_PLAYER ,animation_speed = 1.0, creature = creature_com1, container = container_com1)
+#    container_com1 = com_Container()
+#    creature_com1 = com_Creature("Hero Greg", base_atk = 4)
+#    PLAYER = obj_Actor(1, 1, "python", ASSETS.A_PLAYER ,
+#                       animation_speed = 1.0,
+#                       creature = creature_com1,
+#                       container = container_com1)
 
-    item_com1 = com_Item(value = 4, use_function = cast_heal)
-    creature_com2 = com_Creature("jackie", death_function = death_monster)
-    ai_com1 = ai_Chase()
-    ENEMY  = obj_Actor(10, 5, "smart crab", ASSETS.A_ENEMY, animation_speed = 1.0,
-                    creature = creature_com2, ai = ai_com1, item = item_com1)
 
-    item_com2 = com_Item(value = 5, use_function = cast_heal)
-    ai_com2 = ai_Chase()
-    creature_com3 = com_Creature("bob", death_function = death_monster)
-    ENEMY2  = obj_Actor(14, 15, "dumb crab", ASSETS.A_ENEMY, animation_speed = 1.0,
-                     creature = creature_com3, ai = ai_com2, item = item_com2)
-
+#    item_com2 = com_Item(value = 5, use_function = cast_heal)
+#    ai_com2 = ai_Chase()
+#    creature_com3 = com_Creature("bob", death_function = death_monster)
+#    ENEMY2  = obj_Actor(14, 15, "dumb crab", ASSETS.A_ENEMY, animation_speed = 1.0,
+#                     creature = creature_com3, ai = ai_com2, item = item_com2)
     #create a sword
     #equipment_com1 = com_Equipment(attack_bonus = 2, slot = "hand_right")
     #SWORD = obj_Actor(2, 2, "Short Sword", ASSETS.S_SWORD,
@@ -1151,17 +1204,23 @@ def game_initialize():
     #equipment_com2 = com_Equipment(defense_bonus = 2, slot = "hand_left")
     #SHIELD = obj_Actor(2, 3, "Shield", ASSETS.SHIELD,
     #                 equipment = equipment_com2)
-    GAME.current_objects = [PLAYER, ENEMY, ENEMY2]
+    GAME.current_objects = []
     #create scrolls
     #SCROLL_1 = gen_lightning_scroll((2, 2))
     #SCROLL_2 = gen_fireball_scroll((2, 3))
     #SCROLL_3 = gen_confusion_scroll((2, 4))
+
+    #items
     gen_item((2, 2))
     gen_item((2, 3))
     gen_item((2, 4))
+    #enemies
+    gen_enemy((15, 15))
+    gen_enemy((15, 16))
 
+    PLAYER = gen_player((1, 1))
 
-
+    GAME.current_objects.append(PLAYER)
 
 def game_handle_keys():
     global FOV_CALCULATE
