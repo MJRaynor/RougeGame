@@ -24,5 +24,7 @@ GamePart26  confusion spell
 GamePart27  equipment sword & shield
 GamePart28  item generators
 GamePart29  creature generators found error in fireball code - when firing close
-Bonus       depth and draw order
+Bonus       depth and draw order found in errors in chase function
+GamePart30  map generation
+
 

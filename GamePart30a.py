@@ -1,5 +1,5 @@
-import pygame,sys
 import libtcodpy as libtcod
+import pygame,sys
 import math
 
 #game fi#les
@@ -13,13 +13,13 @@ import constants
 #\__/\__|_|   \__,_|\___|\__|
 #
 #
-
-class struc_Tile:
-    def __init__(self, block_path):
-        self.block_path = block_path
-        self.explored = False
-
-class struc_Assets:
+#
+#class struc_Tile:
+def __init__(self, block_path):
+    self.block_path = block_path
+    self.explored = False
+#
+#class struc_Assets:
     def __init__(self):
         #sprties
         self.reptile          = obj_Spritesheet("data/graphics/Characters/Reptile.png")
@@ -49,6 +49,62 @@ class struc_Assets:
         self.S_SCROLL_02           = self.scroll.get_image('c', 2, 16 ,16, (32 ,32))
         self.S_SCROLL_03           = self.scroll.get_image('d', 6, 16 ,16, (32 ,32))
         self.S_FLESH_01            = self.flesh.get_image('b', 4, 16 ,16, (32 ,32))
+#
+class struc_Tile:
+
+    '''This class functions as a struct that tracks the data for each tile
+    within a map.
+
+    Attributes:
+        block_path (arg, bool) : True if tile prevents actors from moving
+            through it under normal circumstances.
+        explored (bool): Initializes to FALSE, set to true if player
+            has seen it before.
+
+    '''
+
+    def __init__(self, block_path):
+        self.block_path = block_path
+        self.explored = False
+
+class struc_Assets:
+
+    '''This class is a struct that holds all the assets used in the game. This
+    includes sprites, sound effects, and music.
+
+    '''
+
+    def __init__(self):
+        ## SPRITESHEETS ##
+        self.reptile = obj_Spritesheet("data/graphics/Characters/Reptile.png")
+        self.aquatic = obj_Spritesheet("data/graphics/Characters/Aquatic.png")
+        self.wall = obj_Spritesheet("data/graphics/Objects/Wall.png")
+        self.floor = obj_Spritesheet("data/graphics/Objects/Floor.png")
+        self.shield = obj_Spritesheet("data/graphics/Items/Shield.png")
+        self.medwep = obj_Spritesheet("data/graphics/Items/MedWep.png")
+        self.scroll = obj_Spritesheet("data/graphics/Items/Scroll.png")
+        self.flesh = obj_Spritesheet("data/graphics/Items/Flesh.png")
+
+        ## ANIMATIONS ##
+        self.A_PLAYER = self.reptile.get_animation('o', 5, 16, 16, 2, (32, 32))
+        self.A_SNAKE_01 = self.reptile.get_animation('e', 5, 16, 16, 2, (32, 32))
+        self.A_SNAKE_02 = self.reptile.get_animation('k', 5, 16, 16, 2, (32, 32))
+
+        ## SPRITES ##
+        self.S_WALL = self.wall.get_image('d', 7, 16, 16, (32, 32))[0]
+        self.S_WALLEXPLORED = self.wall.get_image('d', 13, 16, 16, (32, 32))[0]
+
+        self.S_FLOOR = self.floor.get_image('b', 8, 16, 16, (32, 32))[0]
+        self.S_FLOOREXPLORED = self.floor.get_image('b', 14, 16, 16, (32, 32))[0]
+
+        ## ITEMS ##
+        self.S_SWORD = self.medwep.get_image('a', 1, 16, 16, (32, 32))
+        self.S_SHIELD = self.shield.get_image('a', 1, 16, 16, (32, 32))
+        self.S_SCROLL_01 = self.scroll.get_image('e', 1, 16, 16, (32, 32))
+        self.S_SCROLL_02 = self.scroll.get_image('c', 2, 16, 16, (32, 32))
+        self.S_SCROLL_03 = self.scroll.get_image('d', 6, 16, 16, (32, 32))
+        self.S_FLESH_01 = self.flesh.get_image('b', 4, 16, 16, (32, 32))
+
 
 #
 #   ___ _     _           _
@@ -58,8 +114,8 @@ class struc_Assets:
 #\___/ |_.__// |\___|\___|\__|___/
 #          |__/
 #
-
-class obj_Actor:
+#
+#class obj_Actor:
     def __init__(self, x, y, name_object, animation, animation_speed = .5, depth = 0, creature = None, ai = None,
                  container = None, item = None, equipment = None):
         self.x = x
@@ -150,16 +206,16 @@ class obj_Actor:
         dy  = int(round(dy/distance))
 
         self.creature.move(dx, dy)
-
-class obj_Game:
+#
+#class obj_Game:
     def __init__(self):
 
-        self.current_map = map_create()
+
         self.current_objects = []
 
         self.message_history = []
-
-class obj_Spritesheet:
+#
+#class obj_Spritesheet:
     #used to grab images out of a sprite sheet
 
     def __init__(self, file_name):
@@ -213,6 +269,329 @@ class obj_Spritesheet:
             image_list.append(image)
 
         return image_list
+#
+#class obj_Room:
+    # rectangle that is on the map
+    def __init__(self, coords, size):
+        self.x1, self.y1 = coords
+        self.w, self.h = size
+
+        self.x2 = self.x1 + self.w
+        self.y2 = self.y1 + self.h
+
+    @property
+    def center(self):
+        center_x = (self.x1 + self.x2) / 2
+        center_y = (self.x1 + self.x2) / 2
+        return (center_x, center_y)
+
+    def intersect(self, other):
+        #return True if other obj intersects with self
+        objects_intersect = (self.x1 <= other.x2 and self.x2 >= other.x1 and
+                             self.y1 <= other.y2 and self.y2 >= other.y1)
+
+        return objects_intersect
+
+class obj_Actor:
+
+    '''The actor object represents every entity in the game.
+
+    This object is anything that can appear or act within the game.  Each entity
+    is made up of components that control how these objects work.
+
+    Attributes:
+        x (arg, int): position on the x axis
+        y (arg, int): position on the y axis
+        name_object (arg, str) : name of the object type, "chair" or
+            "goblin" for example.
+        animation (arg, list): sequence of images that make up the object's
+            spritesheet. Created within the struc_Assets class.
+        animation_speed (arg, float): time in seconds it takes to loop through
+            the object animation.
+
+    Components:
+        creature: any object that has health, and generally can fight.
+        ai: set of instructions an obj_Actor can follow.
+        container: objects that can hold an inventory.
+        item: items are items that are able to be picked up and (usually)
+            usable.
+
+    '''
+
+    def __init__(self, x, y,
+                 name_object,
+                 animation,
+                 animation_speed = .5,
+                 depth = 0,
+
+                 # Components
+                 creature = None,
+                 ai = None,
+                 container = None,
+                 item = None,
+                 equipment = None):
+
+        self.x, self.y = x, y
+        self.name_object = name_object
+        self.animation = animation
+        self.depth = depth
+        # divide by 1.0 to convert ints to floats
+        self.animation_speed = animation_speed / 1.0
+
+        self.creature = creature
+        if self.creature:
+            self.creature.owner = self
+
+        self.ai = ai
+        if self.ai:
+            self.ai.owner = self
+
+        self.container = container
+        if self.container:
+            self.container.owner = self
+
+        self.item = item
+        if self.item:
+            self.item.owner = self
+
+        self.equipment = equipment
+        if self.equipment:
+            self.equipment.owner = self
+
+            self.item = com_Item()
+            self.item.owner = self
+
+        ## PRIVATE ##
+        # speed -> frames conversion
+        self._flickerspeed = self.animation_speed / len(self.animation)
+        # timer for deciding when to flip the image
+        self._flickertimer = 0.0
+        # currently viewed sprite
+        self._spriteimage = 0
+
+
+    @property
+    def display_name(self):
+
+        if self.creature:
+            return (self.creature.name_instance + " the " + self.name_object)
+
+        if self.item:
+            if self.equipment and self.equipment.equipped:
+                return (self.name_object + " (e)")
+            else:
+                return self.name_object
+
+    def draw(self):
+
+        '''Draws the object to the screen.
+
+        This function draws the object to the screen if it appears within the
+        PLAYER fov.  It also keeps track of the timing for animations to trigger
+        a transition to the next sprite in the animation.
+
+        '''
+        is_visible = libtcod.map_is_in_fov(FOV_MAP, self.x, self.y)
+
+        if is_visible:  # if visible, check to see if animation has > 1 image
+            if len(self.animation) == 1:
+                # if no, just blit the image
+                SURFACE_MAIN.blit(self.animation[0], (self.x * constants.CELL_WIDTH,
+                                                      self.y * constants.CELL_HEIGHT))
+            # does this object have multiple sprites?
+            elif len(self.animation) > 1:
+                # only update animation timer if we can calculate how quickly
+                # the game is running.
+                if CLOCK.get_fps() > 0.0:
+                    self._flickertimer +=  1 / CLOCK.get_fps()
+
+                # if the timer has reached the speed
+                if self._flickertimer >= self._flickerspeed:
+                    self._flickertimer = 0.0  # reset the timer
+
+                    # is this sprite the final item in the list?
+                    if self._spriteimage >= len(self.animation) - 1:
+                        self._spriteimage = 0  # reset sprite to top of list
+
+                    else:
+                        self._spriteimage += 1  # advance to next sprite
+
+                #  draw the result
+                SURFACE_MAIN.blit(self.animation[self._spriteimage],
+                                  (self.x * constants.CELL_WIDTH,
+                                   self.y * constants.CELL_HEIGHT))
+
+    def distance_to(self, other):
+
+        dx = other.x - self.x
+        dy = other.y - self.y
+
+        return math.sqrt(dx ** 2 + dy ** 2)
+
+    def move_towards(self, other):
+
+        dx = other.x - self.x
+        dy = other.y - self.y
+
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        dx = int(round(dx / distance))
+        dy = int(round(dy / distance))
+
+        self.creature.move(dx, dy)
+
+class obj_Game:
+
+    '''The obj_Game tracks game progress
+
+    This is an object that stores all the information used by the game to 'keep
+    track' of progress.  It tracks maps, objects, and game history or record of
+    messages.
+
+    Attributes:
+        current_map (obj): whatever map is currently loaded.
+        current_objects (list): list of objects for the current map.
+        message_history (list): list of messages that have been pushed
+            to the player over the course of a game.'''
+
+    def __init__(self):
+        self.current_objects = []
+        self.message_history = []
+
+class obj_Spritesheet:
+
+    '''Class used to grab images out of a sprite sheet.  As a class, it allows
+    you to access and subdivide portions of the sprite_sheet.
+
+    Attributes:
+        file_name (arg, str): String which contains the directory/filename of
+            the image for use as a spritesheet.
+        sprite_sheet (pygame.surface): The loaded spritesheet accessed through
+            the file_name argument.
+
+    '''
+
+    def __init__(self, file_name):
+        self.sprite_sheet = pygame.image.load(file_name).convert()
+
+        self.tiledict = {'a': 1, 'b': 2, 'c': 3, 'd': 4,
+                         'e': 5, 'f': 6, 'g': 7, 'h': 8,
+                         'i': 9, 'j': 10, 'k': 11, 'l': 12,
+                         'm': 13, 'n': 14, 'o': 15, 'p': 16}
+
+    def get_image(self, column, row, width = constants.CELL_WIDTH,
+                  height = constants.CELL_HEIGHT, scale = None):
+        '''This method returns a single sprite.
+
+        Args:
+            column (str): Letter which gets converted into an integer, column in
+                the spritesheet to be loaded.
+            row (int): row in the spritesheet to be loaded.
+            width (int): individual sprite width in pixels
+            height (int): individual sprite height in pixels
+            scale ((width, height)) = If included, scales the sprites to a new
+                size.
+
+        Returns:
+            image_list (list): This method returns a single sprite contained
+                within a list loaded from the spritesheet property.
+
+
+        '''
+
+        image_list = []
+
+        image = pygame.Surface([width, height]).convert()
+
+        image.blit(self.sprite_sheet, (0, 0),
+                   (self.tiledict[column] * width,
+                    row * height,
+                    width, height))
+
+        image.set_colorkey(constants.COLOR_BLACK)
+
+        if scale:
+            (new_w, new_h) = scale
+
+            image = pygame.transform.scale(image, (new_w, new_h))
+
+        image_list.append(image)
+
+        return image_list
+
+    def get_animation(self, column, row, width = constants.CELL_WIDTH,
+                      height = constants.CELL_HEIGHT, num_sprites = 1,
+                      scale = None):
+        '''This method returns a sequence of sprites.
+
+        Args:
+            column (str): Letter which gets converted into an integer, column in
+                the spritesheet to be loaded.
+            row (int): row in the spritesheet to be loaded.
+            width (int): individual sprite width in pixels
+            height (int): individual sprite height in pixels
+            num_sprites (int): number of sprites to be loaded in sequence.
+            scale ((width, height)) = If included, scales the sprites to a new
+                size.
+
+        Returns:
+            image_list (list): This method returns a sequence of sprites
+                contained within a list loaded from the spritesheet property.
+
+        '''
+
+        image_list = []
+
+        for i in range(num_sprites):
+            # create blank image
+            image = pygame.Surface([width, height]).convert()
+
+            # copy image from sheet onto blank
+            image.blit(self.sprite_sheet,
+                       (0, 0),
+                       (self.tiledict[column] * width + (width * i),
+                        row * height, width, height))
+
+            # set transparency key to black
+            image.set_colorkey(constants.COLOR_BLACK)
+
+            if scale:
+                (new_w, new_h) = scale
+
+                image = pygame.transform.scale(image, (new_w, new_h))
+
+            image_list.append(image)
+
+        return image_list
+
+class obj_Room:
+
+    ''' This is a rectangle that lives on the map '''
+
+    def __init__(self, coords, size):
+
+        self.x1, self.y1 = coords
+        self.w, self.h = size
+
+        self.x2 = self.x1 + self.w
+        self.y2 = self.y1 + self.h
+
+    @property
+    def center(self):
+        center_x = (self.x1 + self.x2) / 2
+        center_y = (self.y1 + self.y2) / 2
+
+        return (center_x, center_y)
+
+    def intersect(self, other):
+
+        # return True if other obj intersects with this one
+        objects_intersect = (self.x1 <= other.x2 and self.x2 >= other.x1 and
+                             self.y1 <= other.y2 and self.y2 >= other.y1)
+
+        return objects_intersect
+
+
 
 #
 #   ___                                             _
@@ -456,23 +835,165 @@ def death_snake(monster):
 #\/    \/\__,_| .__/
 #             |_|
 #
-
 def map_create():
-    new_map = [[struc_Tile(False) for y in range(0,constants.MAP_HEIGHT)]for x in range(0,constants.MAP_WIDTH)]
-    new_map[10][10].block_path = True
-    new_map[10][15].block_path = True
 
-    for x in range(constants.MAP_WIDTH):
-        new_map[x][0].block_path = True
-        new_map[x][constants.MAP_HEIGHT-1].block_path = True
+    '''Creates the default map.
 
-    for y in range(constants.MAP_HEIGHT):
-        new_map[0][y].block_path = True
-        new_map[constants.MAP_WIDTH-1][y].block_path = True
+    Currently, the map this function creatures is a small room with 2 pillars
+    within it.  It is a testing map.
 
+    Returns:
+        new_map (array): This array is populated with struc_Tile objects.
+
+    Effects:
+        Calls map_make_fov on new_map to preemptively create the fov.
+
+    '''
+
+    # initializes an empty map
+    new_map = [[struc_Tile(True) for y in range(0, constants.MAP_HEIGHT)]
+                                    for x in range(0, constants.MAP_WIDTH)]
+
+    # generate new room
+    list_of_rooms = []
+
+    for i in range(constants.MAP_MAX_NUM_ROOMS):
+
+        w = libtcod.random_get_int(0, constants.ROOM_MIN_WIDTH,
+                                      constants.ROOM_MAX_WIDTH)
+        h = libtcod.random_get_int(0, constants.ROOM_MIN_HEIGHT,
+                                      constants.ROOM_MAX_HEIGHT)
+
+        x = libtcod.random_get_int(0, 2, constants.MAP_WIDTH - w - 2)
+        y = libtcod.random_get_int(0, 2, constants.MAP_HEIGHT - h - 2)
+
+        #create the room
+        new_room = obj_Room((x, y), (w, h))
+
+        failed = False
+
+        # check for interference
+        for other_room in list_of_rooms:
+            if new_room.intersect(other_room):
+                failed = True
+                break
+
+        if not failed:
+            # place room
+            map_create_room(new_map, new_room)
+            current_center = new_room.center
+
+            if len(list_of_rooms) == 0:
+                gen_player(current_center)
+
+            else:
+                previous_center = list_of_rooms[-1].center
+
+                # dig tunnels
+                map_create_tunnels(current_center, previous_center, new_map)
+
+            list_of_rooms.append(new_room)
+
+    # create FOV_MAP
     map_make_fov(new_map)
 
+    # returns the created map
     return new_map
+#
+#def map_create():
+#    new_map = [[struc_Tile(True) for y in range(0,constants.MAP_HEIGHT)] for x in range(0,constants.MAP_WIDTH)]
+#
+#    # generate new room
+#    list_of_rooms = []
+#
+#    for i in range(constants.MAP_MAX_NUM_ROOMS):
+#
+#        w = libtcod.random_get_int(0, constants.ROOM_MIN_WIDTH, constants.ROOM_MAX_WIDTH)
+#        h = libtcod.random_get_int(0, constants.ROOM_MIN_HEIGHT, constants.ROOM_MAX_HEIGHT)
+#        x = libtcod.random_get_int(0, 2, constants.MAP_WIDTH - w -2)
+#        y = libtcod.random_get_int(0, 2, constants.MAP_HEIGHT - h -2)
+#
+#        #creatre room
+#        new_room = obj_Room((x, y), (w, h))
+#
+#        failed = False
+#
+#        #check for intersection
+#        for other_room in list_of_rooms:
+#            if new_room.intersect(other_room):
+#                failed = True
+#                break
+#
+#        if not failed:
+#            #place the room
+#            map_create_room(new_map, new_room)
+#            current_center = new_room.center
+#
+#            if len(list_of_rooms) == 0:
+#                gen_player(current_center)
+#            else:
+#                previous_center = list_of_rooms[-1].center
+#                #dig tunnels
+#                map_create_tunnels(current_center, previous_center, new_map)
+#            list_of_rooms.append(new_room)
+#
+#
+#    map_make_fov(new_map)
+#
+#    return new_map
+
+
+def map_create_room(new_map, new_room):
+
+    for x in range(new_room.x1, new_room.x2):
+        for y in range(new_room.y1, new_room.y2):
+            new_map[x][y].block_path = False
+
+
+def map_create_tunnels(coords1, coords2, new_map):
+
+    coin_flip = (libtcod.random_get_int(0, 0, 1) == 1)
+
+    x1, y1 = coords1
+    x2, y2 = coords2
+
+    if coin_flip:
+
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            new_map[x][y1].block_path = False
+
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            new_map[x2][y].block_path = False
+
+    else:
+
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            new_map[x1][y].block_path = False
+
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            new_map[x][y2].block_path = False
+
+#def map_create_tunnels(coords1, coords2, new_map):
+#    coin_flip = (libtcod.random_get_int(0,0,1) == 1)
+#
+#    x1, y1 = coords1
+#    x2, y2 = coords2
+#    # dig the tunnels
+#
+#
+#    if coin_flip:
+#        for x in range(min(x1, x2), max(x1, x2) + 1):
+#            new_map[x][y1].block_path = False
+#        for y in range(min(y1, y2), max(y1, y2) + 1):
+#            new_map[x2][y].block_path = False
+#
+#    else:
+#        for y in range(min(y1, y2), max(y1, y2) + 1):
+#            new_map[x1][y].block_path = False
+#        for x in range(min(x1, x2), max(x1, x2) + 1):
+#            new_map[x][y2].block_path = False
+
+
 
 def map_check_for_creatures(x, y, exclude_object = None):
 
@@ -690,15 +1211,13 @@ def helper_text_objects(incoming_text, incoming_font, incoming_color, incoming_b
 
 def helper_text_height(font):
 
-    font_object = font.render('a', False ,(0 ,0, 0))
-    font_rect = font_object.get_rect()
+    font_rect = font.render('a', False ,(0 ,0, 0)).get_rect()
 
     return font_rect.height
 
 def helper_text_width(font):
 
-    font_object = font.render('a', False ,(0 ,0, 0))
-    font_rect = font_object.get_rect()
+    font_rect = font.render('a', False ,(0 ,0, 0)).get_rect()
 
     return font_rect.width
 
@@ -871,7 +1390,7 @@ def menu_inventory():
                             mouse_x_rel < menu_width and
                             mouse_y_rel < menu_height)
 
-        mouse_line_selection = int(mouse_y_rel / menu_text_height)
+        mouse_line_selection = mouse_y_rel / menu_text_height
         for event in events_list:
 
             if event.type == pygame.KEYDOWN:
@@ -1170,38 +1689,66 @@ def game_main_loop():
 #\____/\_/ \_/\/    \/\__/   |_|_| |_|_|\__|
 #
 #
-
 def game_initialize():
+
+    '''This function initializes the main window, and pygame.
+
+    '''
+
     global SURFACE_MAIN, GAME, CLOCK, FOV_CALCULATE, ASSETS
-    #initalizes the main window in pygame
+
+    # initialize pygame
     pygame.init()
 
-    pygame.key.set_repeat(200,70)#set key repeat
-    #SURFACE_MAIN = pygame.display.set_mode((constants.GAME_WIDTH,constants.GAME_HEIGHT))
-    SURFACE_MAIN = pygame.display.set_mode((constants.MAP_WIDTH*constants.CELL_WIDTH, constants.MAP_HEIGHT*constants.CELL_HEIGHT))
+    pygame.key.set_repeat(200, 70)
 
-    GAME = obj_Game()
+    libtcod.namegen_parse('data\\namegen\\jice_celtic.cfg')
 
-    CLOCK = pygame.time.Clock()
+    # SURFACE_MAIN is the display surface, a special surface that serves as the
+    # root console of the whole game.  Anything that appears in the game must be
+    # drawn to this console before it will appear.
+    SURFACE_MAIN = pygame.display.set_mode((constants.MAP_WIDTH * constants.CELL_WIDTH,
+                                            constants.MAP_HEIGHT * constants.CELL_HEIGHT))
 
-    pygame.display.set_caption('Test Game!')
-
-    FOV_CALCULATE = True
-
+    # ASSETS stores the games assets
     ASSETS = struc_Assets()
 
-    #Name Gen via dorian lib
-    libtcod.namegen_parse("data\\namegen\\jice_celtic.cfg")
-    GAME.current_objects = []
-    #items
-    gen_item((2, 2))
-    gen_item((2, 3))
-    gen_item((2, 4))
-    #enemies
-    gen_enemy((15, 15))
-    gen_enemy((15, 16))
+    # GAME tracks game progress
+    GAME = obj_Game()
 
-    gen_player((1, 1))
+    GAME.current_map = map_create()
+
+    # The CLOCK tracks and limits cpu cycles
+    CLOCK = pygame.time.Clock()
+
+    # when FOV_CALCULATE is true, FOV recalculates
+    FOV_CALCULATE = True
+
+#
+#def game_initialize():
+#    global SURFACE_MAIN, GAME, CLOCK, FOV_CALCULATE, ASSETS
+#    #initalizes the main window in pygame
+#    pygame.init()
+#
+#    pygame.key.set_repeat(200,70)#set key repeat
+#
+#    #Name Gen via dorian lib
+#    libtcod.namegen_parse("data\\namegen\\jice_celtic.cfg")
+#
+#    #SURFACE_MAIN = pygame.display.set_mode((constants.GAME_WIDTH,constants.GAME_HEIGHT))
+#    SURFACE_MAIN = pygame.display.set_mode((constants.MAP_WIDTH*constants.CELL_WIDTH, constants.MAP_HEIGHT*constants.CELL_HEIGHT))
+#
+#    ASSETS = struc_Assets()
+#
+#    pygame.display.set_caption('Test Game!')
+#
+#    GAME = obj_Game()
+#
+#    GAME.current_map = map_create()
+#
+#    CLOCK = pygame.time.Clock()
+#
+#    FOV_CALCULATE = True
 
 
 
