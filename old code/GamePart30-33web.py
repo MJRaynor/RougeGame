@@ -184,7 +184,7 @@ class obj_Actor:
         if is_visible:  # if visible, check to see if animation has > 1 image
             if len(self.animation) == 1:
                 # if no, just blit the image
-                SURFACE_MAIN.blit(self.animation[0], (self.x * constants.CELL_WIDTH,
+                SURFACE_MAP.blit(self.animation[0], (self.x * constants.CELL_WIDTH,
                                                       self.y * constants.CELL_HEIGHT))
             # does this object have multiple sprites?
             elif len(self.animation) > 1:
@@ -205,7 +205,7 @@ class obj_Actor:
                         self._spriteimage += 1  # advance to next sprite
 
                 #  draw the result
-                SURFACE_MAIN.blit(self.animation[self._spriteimage],
+                SURFACE_MAP.blit(self.animation[self._spriteimage],
                                   (self.x * constants.CELL_WIDTH,
                                    self.y * constants.CELL_HEIGHT))
 
@@ -378,6 +378,77 @@ class obj_Room:
                              self.y1 <= other.y2 and self.y2 >= other.y1)
 
         return objects_intersect
+
+class obj_Camera:
+
+    def __init__(self):
+
+        self.width = constants.CAMERA_WIDTH
+        self.height = constants.CAMERA_HEIGHT
+        self.x, self.y = (0, 0)
+
+    @property
+    def rectangle(self):
+
+        pos_rect = pygame.Rect((0, 0), (constants.CAMERA_WIDTH,
+                                        constants.CAMERA_HEIGHT))
+
+        pos_rect.center = (self.x, self.y)
+
+        return pos_rect
+
+    @property
+    def map_address(self):
+
+        map_x = self.x / constants.CELL_WIDTH
+        map_y = self.y / constants.CELL_HEIGHT
+
+        return (map_x, map_y)
+
+    def update(self):
+
+        target_x = PLAYER.x * constants.CELL_WIDTH + (constants.CELL_WIDTH/2)
+        target_y = PLAYER.y * constants.CELL_HEIGHT + (constants.CELL_HEIGHT/2)
+
+        distance_x, distance_y = self.map_dist((target_x, target_y))
+
+        self.x += int(distance_x)
+        self.y += int(distance_y)
+
+    def win_to_map(self, coords):
+
+        tar_x, tar_y = coords
+
+        #convert window coords to distace from camera
+        cam_d_x, cam_d_y = self.cam_dist((tar_x, tar_y))
+
+        #distance from cam -> map coord
+        map_p_x = self.x + cam_d_x
+        map_p_y = self.y + cam_d_y
+
+        return((map_p_x, map_p_y))
+
+
+    def map_dist(self, coords):
+
+        new_x, new_y = coords
+
+        dist_x = new_x - self.x
+        dist_y = new_y - self.y
+
+        return (dist_x, dist_y)
+
+    def cam_dist(self, coords):
+
+        win_x, win_y = coords
+
+        dist_x = win_x - (self.width / 2)
+        dist_y = win_y - (self.height / 2)
+
+        return (dist_x, dist_y)
+
+
+
 
 
 
@@ -832,7 +903,21 @@ def map_create():
     map_make_fov(new_map)
 
     # returns the created map
-    return new_map
+    return (new_map, list_of_rooms)
+
+def map_place_objects(room_list):
+
+    for room in room_list:
+
+        x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+        y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+
+        gen_enemy((x, y))
+
+        x = libtcod.random_get_int(0, room.x1 + 1, room.x2 - 1)
+        y = libtcod.random_get_int(0, room.y1 + 1, room.y2 - 1)
+
+        gen_item((x, y))
 
 def map_create_room(new_map, new_room):
     for x in range(new_room.x1, new_room.x2):
@@ -1055,13 +1140,19 @@ def draw_game():
 
     # clear the display surface
     SURFACE_MAIN.fill(constants.COLOR_DEFAULT_BG)
+    SURFACE_MAP.fill(constants.COLOR_BLACK)
+
+    CAMERA.update()
 
     # draw the map
     draw_map(GAME.current_map)
 
     # draw all objects
-    for obj in sorted(GAME.current_objects, key = lambda obj: obj.depth, reverse = True):
+    for obj in sorted(GAME.current_objects, key = lambda obj: obj.depth,
+        reverse = True):
         obj.draw()
+
+    SURFACE_MAIN.blit(SURFACE_MAP, (0, 0), CAMERA.rectangle)
 
     draw_debug()
     draw_messages()
@@ -1079,9 +1170,25 @@ def draw_map(map_to_draw):
 
     '''
 
+    cam_x, cam_y = CAMERA.map_address
+
+    display_map_w = constants.CAMERA_WIDTH / constants.CELL_WIDTH
+    display_map_h = constants.CAMERA_HEIGHT / constants.CELL_HEIGHT
+
+    render_w_min = cam_x - (display_map_w / 2)
+    render_h_min = cam_y - (display_map_h / 2)
+    render_w_max = cam_x + (display_map_w / 2)
+    render_h_max = cam_y + (display_map_h / 2)
+
+    if render_w_min < 0: render_w_min = 0
+    if render_h_min < 0: render_h_min = 0
+
+    if render_w_max > constants.MAP_WIDTH: render_w_max = constants.MAP_WIDTH
+    if render_h_max > constants.MAP_HEIGHT: render_h_max = constants.MAP_HEIGHT
+
     # Loop through every object in the map
-    for x in range(0, constants.MAP_WIDTH):
-        for y in range(0, constants.MAP_HEIGHT):
+    for x in range(render_w_min, render_w_max):
+        for y in range(render_h_min, render_h_max):
 
             # Does this tile appear within the current FOV?
             is_visible = libtcod.map_is_in_fov(FOV_MAP, x, y)
@@ -1095,11 +1202,11 @@ def draw_map(map_to_draw):
                 if map_to_draw[x][y].block_path == True:
 
                     # draw wall
-                    SURFACE_MAIN.blit(ASSETS.S_WALL,
+                    SURFACE_MAP.blit(ASSETS.S_WALL,
                                       (x * constants.CELL_WIDTH,
                                        y * constants.CELL_HEIGHT))
                 else: # otherwise, draw a floor
-                    SURFACE_MAIN.blit(ASSETS.S_FLOOR,
+                    SURFACE_MAP.blit(ASSETS.S_FLOOR,
                                       (x * constants.CELL_WIDTH,
                                        y * constants.CELL_HEIGHT))
 
@@ -1110,11 +1217,11 @@ def draw_map(map_to_draw):
                 if map_to_draw[x][y].block_path == True:
 
                     # draw wall
-                    SURFACE_MAIN.blit(ASSETS.S_WALLEXPLORED,
+                    SURFACE_MAP.blit(ASSETS.S_WALLEXPLORED,
                                       (x * constants.CELL_WIDTH,
                                        y * constants.CELL_HEIGHT))
                 else: #otherwise, draw a floor
-                    SURFACE_MAIN.blit(ASSETS.S_FLOOREXPLORED,
+                    SURFACE_MAP.blit(ASSETS.S_FLOOREXPLORED,
                                       (x * constants.CELL_WIDTH,
                                        y * constants.CELL_HEIGHT))
 
@@ -1152,7 +1259,7 @@ def draw_messages():
 
     text_height = helper_text_height(constants.FONT_MESSAGE_TEXT)
 
-    start_y = (constants.MAP_HEIGHT * constants.CELL_HEIGHT -
+    start_y = (constants.CAMERA_HEIGHT -
                (constants.NUM_MESSAGES * text_height)) - 5
 
     for i, (message, color) in enumerate(to_draw):
@@ -1220,7 +1327,7 @@ def draw_tile_rect(coords, tile_color = None, tile_alpha = None, mark = None):
                   coords = (constants.CELL_WIDTH/2, constants.CELL_HEIGHT/2),
                   text_color = constants.COLOR_BLACK, center = True)
 
-    SURFACE_MAIN.blit(new_surface, (new_x, new_y))
+    SURFACE_MAP.blit(new_surface, (new_x, new_y))
 
 
 
@@ -1360,10 +1467,10 @@ def cast_fireball(caster, T_damage_radius_range):
     damage, local_radius, max_r = T_damage_radius_range
 
 
-    player_location = (caster.x, caster.y)
+    caster_location = (caster.x, caster.y)
 
     # get target tile
-    point_selected = menu_tile_select(coords_origin = player_location,
+    point_selected = menu_tile_select(coords_origin = caster_location,
                                       max_range = max_r,
                                       penetrate_walls = False,
                                       pierce_creature = False,
@@ -1424,8 +1531,8 @@ def menu_pause():
     menu_close = False
 
     # window dimentions
-    window_width = constants.MAP_WIDTH * constants.CELL_WIDTH
-    window_height = constants.MAP_HEIGHT * constants.CELL_HEIGHT
+    window_width = constants.CAMERA_WIDTH
+    window_height = constants.CAMERA_HEIGHT
 
     # Window Text characteristics
     menu_text = "PAUSED"
@@ -1473,8 +1580,8 @@ def menu_inventory():
     menu_close = False
 
     # Calculate window dimensions
-    window_width = constants.MAP_WIDTH * constants.CELL_WIDTH
-    window_height = constants.MAP_HEIGHT * constants.CELL_HEIGHT
+    window_width = constants.CAMERA_WIDTH
+    window_height = constants.CAMERA_HEIGHT
 
     # Menu Characteristics
     menu_width = 200
@@ -1581,8 +1688,11 @@ def menu_tile_select(coords_origin = None, max_range = None, radius = None,
         events_list = pygame.event.get()
 
         # mouse map selection
-        map_coord_x = mouse_x/constants.CELL_WIDTH
-        map_coord_y = mouse_y/constants.CELL_HEIGHT
+
+        mapx_pixel, mapy_pixel = CAMERA.win_to_map((mouse_x, mouse_y))
+
+        map_coord_x = mapx_pixel/constants.CELL_WIDTH
+        map_coord_y = mapy_pixel/constants.CELL_HEIGHT
 
         valid_tiles = []
 
@@ -1624,7 +1734,18 @@ def menu_tile_select(coords_origin = None, max_range = None, radius = None,
 
 
         # draw game first
-        draw_game()
+        SURFACE_MAIN.fill(constants.COLOR_DEFAULT_BG)
+        SURFACE_MAP.fill(constants.COLOR_BLACK)
+
+        CAMERA.update()
+
+        # draw the map
+        draw_map(GAME.current_map)
+
+        # draw all objects
+        for obj in sorted(GAME.current_objects, key = lambda obj: obj.depth,
+            reverse = True):
+            obj.draw()
 
         # Draw rectangle at mouse position on top of game
         for (tile_x, tile_y) in valid_tiles:
@@ -1642,6 +1763,11 @@ def menu_tile_select(coords_origin = None, max_range = None, radius = None,
                 draw_tile_rect(coords = (tile_x, tile_y),
                                tile_color = constants.COLOR_RED,
                                tile_alpha = 150)
+
+        SURFACE_MAIN.blit(SURFACE_MAP, (0, 0), CAMERA.rectangle)
+
+        draw_debug()
+        draw_messages()
 
         # update the display
         pygame.display.flip()
@@ -1900,7 +2026,8 @@ def game_initialize():
 
     '''
 
-    global SURFACE_MAIN, GAME, CLOCK, FOV_CALCULATE, ASSETS
+    global SURFACE_MAIN, SURFACE_MAP
+    global GAME, CLOCK, FOV_CALCULATE, ASSETS, CAMERA
 
     # initialize pygame
     pygame.init()
@@ -1912,8 +2039,13 @@ def game_initialize():
     # SURFACE_MAIN is the display surface, a special surface that serves as the
     # root console of the whole game.  Anything that appears in the game must be
     # drawn to this console before it will appear.
-    SURFACE_MAIN = pygame.display.set_mode((constants.MAP_WIDTH * constants.CELL_WIDTH,
-                                            constants.MAP_HEIGHT * constants.CELL_HEIGHT))
+    SURFACE_MAIN = pygame.display.set_mode((constants.CAMERA_WIDTH,
+                                            constants.CAMERA_HEIGHT))
+
+    SURFACE_MAP = pygame.Surface((constants.MAP_WIDTH * constants.CELL_WIDTH,
+                                  constants.MAP_HEIGHT * constants.CELL_HEIGHT))
+
+    CAMERA = obj_Camera()
 
     # ASSETS stores the games assets
     ASSETS = struc_Assets()
@@ -1921,15 +2053,15 @@ def game_initialize():
     # GAME tracks game progress
     GAME = obj_Game()
 
-    GAME.current_map = map_create()
+    GAME.current_map, GAME.current_rooms = map_create()
+
+    map_place_objects(GAME.current_rooms)
 
     # The CLOCK tracks and limits cpu cycles
     CLOCK = pygame.time.Clock()
 
     # when FOV_CALCULATE is true, FOV recalculates
     FOV_CALCULATE = True
-
-
 
 def game_handle_keys():
 

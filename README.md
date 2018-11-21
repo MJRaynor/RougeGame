@@ -27,4 +27,13 @@ GamePart24  lightning pt 2
 GamePart25  fireball spell
 GamePart26  confusion spell
 GamePart27  equipment sword & shield
-
+GamePart28  item generators
+GamePart29  creature generators found error in fireball code - when firing close
+Bonus       depth and draw order found in errors in chase function
+GamePart30  map generation - bracncehd to web code
+GamePart31  populate map
+GamePart32  moving camera in game (changeing FOV)
+GamePart33  fixing camera related bugs
+GamePart34  map transitions
+GamePart35  save and loading game
+GamePart36  stairs going up and down
