@@ -37,3 +37,5 @@ GamePart33  fixing camera related bugs
 GamePart34  map transitions
 GamePart35  save and loading game
 GamePart36  stairs going up and down
+GamePart37  menus
+GamePart38  menuss again - game sounds

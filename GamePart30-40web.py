@@ -4,6 +4,8 @@ import pygame
 import math
 import pickle
 import gzip
+import random
+import sys
 
 # game files
 import constants
@@ -79,6 +81,9 @@ class struc_Assets:
         ## SPECIAL ##
         self.S_STAIRS_DOWN = self.tile.get_image('f', 4, 16, 16, (32, 32))
         self.S_STAIRS_UP = self.tile.get_image('e', 4, 16, 16, (32, 32))
+        self.MAIN_MENU_BG = pygame.image.load("data/graphics/snake_menu.jpg")
+        self.MAIN_MENU_BG = pygame.transform.scale(self.MAIN_MENU_BG,
+                              (constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT))
 
         self.animation_dict = {
 
@@ -102,6 +107,30 @@ class struc_Assets:
             "S_STAIRS_UP" : self.S_STAIRS_UP,
 
         }
+
+        ## AUDIO ##
+
+        self.snd_list = []
+
+        self.music_background = "data/audio/Our First Hours.mp3"
+        self.snd_hit_1 = self.add_sound("data/audio/hit_1.wav")
+        self.snd_hit_2 = self.add_sound("data/audio/hit_2.wav")
+        self.snd_hit_3 = self.add_sound("data/audio/hit_3.wav")
+        self.snd_hit_4 = self.add_sound("data/audio/hit_4.wav")
+
+        self.snd_list_hit = [ self.snd_hit_1,
+                              self.snd_hit_2,
+                              self.snd_hit_3,
+                              self.snd_hit_4 ]
+
+    def add_sound(self, file_address):
+
+        new_sound = pygame.mixer.Sound(file_address)
+
+        self.snd_list.append(new_sound)
+
+        return new_sound
+
 
 
 
@@ -644,6 +673,10 @@ class com_Creature:
                      " damage!", constants.COLOR_WHITE)
 
         target.creature.take_damage(damage_delt)
+
+        if damage_delt > 0 and self.owner is PLAYER:
+            pygame.mixer.Sound.play(RANDOM_ENGINE.choice(ASSETS.snd_list_hit))
+
 
     def take_damage(self, damage):
 
@@ -1616,15 +1649,6 @@ def cast_heal(caster, value):
         caster.creature.heal(value)
         print(caster.creature.current_hp)
 
-        # print message
-        game_message(caster.creature.name_instance +
-                     "'s health is " +
-                     str(caster.creature.current_hp) +
-                     "/" +
-                     str(caster.creature.max_hp),
-                     constants.COLOR_GREEN)
-
-
     return None
 
 def cast_lightning(caster, T_damage_maxrange):
@@ -1705,11 +1729,319 @@ def cast_confusion(caster, effect_length):
 
 
 
+#    _   _ ___
+#   | | | |_ _|
+#   | | | || |
+#   | |_| || |
+#   \____/|___|
+
+class ui_Button:
+
+    def __init__(self, surface, button_text, size, center_coords,
+                 color_box_mouseover = constants.COLOR_RED,
+                 color_box_default = constants.COLOR_GREEN,
+                 color_text_mouseover = constants.COLOR_GREY,
+                 color_text_default = constants.COLOR_GREY):
+
+        self.surface = surface
+        self.button_text = button_text
+        self.size = size
+        self.center_coords = center_coords
+
+        self.c_box_mo = color_box_mouseover
+        self.c_box_default = color_box_default
+        self.c_text_mo = color_text_mouseover
+        self.c_text_default = color_text_default
+        self.c_c_box = color_box_default
+        self.c_c_text = color_text_default
+
+        self.rect = pygame.Rect((0, 0), size)
+        self.rect.center = center_coords
+
+    def update(self, player_input):
+
+        mouse_clicked = False
+
+        local_events, local_mousepos = player_input
+        mouse_x, mouse_y = local_mousepos
+
+        mouse_over = (   mouse_x >= self.rect.left
+                     and mouse_x <= self.rect.right
+                     and mouse_y >= self.rect.top
+                     and mouse_y <= self.rect.bottom )
+
+        for event in local_events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: mouse_clicked = True
+
+        if mouse_over and mouse_clicked:
+            return True
+
+        if mouse_over:
+            self.c_c_box = self.c_box_mo
+            self.c_c_text = self.c_text_mo
+        else:
+            self.c_c_box = self.c_box_default
+            self.c_c_text = self.c_text_default
+
+    def draw(self):
+
+        pygame.draw.rect(self.surface, self.c_c_box, self.rect)
+        draw_text(self.surface,
+                  self.button_text,
+                  constants.FONT_DEBUG_MESSAGE,
+                  self.center_coords,
+                  self.c_c_text,
+                  center = True)
+
+class ui_Slider:
+
+    def __init__(self,
+                 surface,
+                 size,
+                 center_coords,
+                 bg_color,
+                 fg_color,
+                 parameter_value):
+
+        self.surface = surface
+        self.size = size
+        self.bg_color = bg_color
+        self.fg_color = fg_color
+        self.current_val = parameter_value
+
+        self.bg_rect = pygame.Rect((0, 0), size)
+        self.bg_rect.center = center_coords
+        self.fg_rect = pygame.Rect((0, 0),
+                            (self.bg_rect.w * self.current_val, self.bg_rect.h))
+        self.fg_rect.topleft = self.bg_rect.topleft
+
+        self.grip_tab = pygame.Rect((0, 0), (20, self.bg_rect.h + 4))
+        self.grip_tab.center = (self.fg_rect.right, self.bg_rect.centery)
+
+    def update(self, player_input):
+
+        mouse_down = pygame.mouse.get_pressed()[0]
+
+        local_events, local_mousepos = player_input
+        mouse_x, mouse_y = local_mousepos
+
+        mouse_over = (   mouse_x >= self.bg_rect.left
+                     and mouse_x <= self.bg_rect.right
+                     and mouse_y >= self.bg_rect.top
+                     and mouse_y <= self.bg_rect.bottom )
+
+        if mouse_down and mouse_over:
+
+            self.current_val = (float(mouse_x) - float(self.bg_rect.left)) / self.bg_rect.w
+
+            print (mouse_x - self.bg_rect.left), self.bg_rect.w
+            print self.current_val
+
+            self.fg_rect.width = self.bg_rect.width * self.current_val
+
+            self.grip_tab.center = (self.fg_rect.right, self.bg_rect.centery)
+
+
+
+    def draw(self):
+
+        # draw background rectangle
+        pygame.draw.rect(self.surface, self.bg_color, self.bg_rect)
+
+        # draw foreground rectangle
+        pygame.draw.rect(self.surface, self.fg_color, self.fg_rect)
+
+        # draw slider tab
+        pygame.draw.rect(self.surface, constants.COLOR_BLACK, self.grip_tab)
+
+
+
+
+
+
+
+
+
+
 #  __  __
 # |  \/  | ___ _ __  _   _ ___
 # | |\/| |/ _ \ '_ \| | | / __|
 # | |  | |  __/ | | | |_| \__ \
 # |_|  |_|\___|_| |_|\__,_|___/
+
+def menu_main():
+
+    button_y_offset = 40
+
+    game_initialize()
+
+    menu_running = True
+
+    title_x = constants.CAMERA_WIDTH/2
+    title_y = constants.CAMERA_HEIGHT/2 - button_y_offset
+    title_text = "Python - RL"
+
+    # BUTTON ADDRESSES
+    continue_button_y = title_y + button_y_offset
+    new_game_button_y = continue_button_y + button_y_offset
+    options_button_y = new_game_button_y + button_y_offset
+    quit_button_y = options_button_y + button_y_offset
+
+
+    # draw menu
+    SURFACE_MAIN.blit(ASSETS.MAIN_MENU_BG, (0, 0))
+
+    draw_text(SURFACE_MAIN,
+              title_text,
+              constants.FONT_TITLE_SCREEN,
+              (title_x, title_y),
+              constants.COLOR_RED,
+              back_color = constants.COLOR_BLACK,
+              center = True)
+
+    continue_game_button = ui_Button(SURFACE_MAIN,
+                            "Continue",
+                            (150, 30),
+                            (title_x, continue_button_y))
+
+    new_game_button = ui_Button(SURFACE_MAIN,
+                                "New Game",
+                                (150, 30),
+                                (title_x, new_game_button_y))
+
+    options_button = ui_Button(SURFACE_MAIN,
+                               "Options",
+                               (150, 30),
+                               (title_x, options_button_y))
+
+    quit_button = ui_Button(SURFACE_MAIN,
+                            "Quit Game",
+                            (150, 30),
+                            (title_x, quit_button_y))
+
+    pygame.mixer.music.load(ASSETS.music_background)
+    pygame.mixer.music.play(-1)
+
+    while menu_running:
+
+        list_of_events = pygame.event.get()
+        mouse_position = pygame.mouse.get_pos()
+
+        game_input = (list_of_events, mouse_position)
+
+        # handle menu events
+        for event in list_of_events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        #button updates
+        if continue_game_button.update(game_input):
+            pygame.mixer.music.stop()
+            # try to load game, start new if problems
+            try:
+                game_load()
+            except:
+                game_new()
+
+            game_main_loop()
+
+
+        if new_game_button.update(game_input):
+            pygame.mixer.music.stop()
+            game_new()
+            game_main_loop()
+
+        if options_button.update(game_input):
+            menu_main_options()
+            SURFACE_MAIN.blit(ASSETS.MAIN_MENU_BG, (0, 0))
+            draw_text(SURFACE_MAIN,
+                      title_text,
+                      constants.FONT_TITLE_SCREEN,
+                      (title_x, title_y),
+                      constants.COLOR_RED,
+                      back_color = constants.COLOR_BLACK,
+                      center = True)
+
+        if quit_button.update(game_input):
+            # quit the game
+            pygame.quit()
+            sys.exit()
+
+        continue_game_button.draw()
+        new_game_button.draw()
+        options_button.draw()
+        quit_button.draw()
+
+        #update surface
+        pygame.display.update()
+
+def menu_main_options():
+
+    # MENU VARS #
+    settings_menu_width = 200
+    settings_menu_height = 200
+    settings_menu_bgcolor = constants.COLOR_GREY
+
+    # SLIDER VARS #
+    slider_x = constants.CAMERA_WIDTH/2
+    sound_effect_slider_y = constants.CAMERA_HEIGHT/2
+    sound_effect_vol = .5
+
+    window_center = (constants.CAMERA_WIDTH/2, constants.CAMERA_HEIGHT/2)
+
+    settings_menu_surface = pygame.Surface((settings_menu_width,
+                                            settings_menu_height))
+
+    settings_menu_rect = pygame.Rect(0, 0,
+                                     settings_menu_width,
+                                     settings_menu_height)
+
+    settings_menu_rect.center = window_center
+
+    menu_close = False
+
+    sound_effect_slider = ui_Slider(SURFACE_MAIN,
+                                    (125, 15),
+                                    (slider_x, sound_effect_slider_y),
+                                    constants.COLOR_RED,
+                                    constants.COLOR_GREEN,
+                                    .5)
+
+
+
+
+    while not menu_close:
+
+        list_of_events = pygame.event.get()
+        mouse_position = pygame.mouse.get_pos()
+
+        game_input = (list_of_events, mouse_position)
+
+        # handle menu events
+        for event in list_of_events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    menu_close = True
+
+        sound_effect_slider.update(game_input)
+
+        # Draw the Menu
+        settings_menu_surface.fill(settings_menu_bgcolor)
+
+        SURFACE_MAIN.blit(settings_menu_surface, settings_menu_rect.topleft)
+
+        sound_effect_slider.draw()
+
+        pygame.display.update()
+
+
+
 
 def menu_pause():
 
@@ -2200,7 +2532,7 @@ def gen_mouse(coords):
 
     ai_com = ai_Flee()
 
-    item_com = com_Item(use_function = cast_heal, value = libtcod.random_get_int(0, 2, 10))
+    item_com = com_Item(use_function = cast_heal, value = 2)
 
     mouse = obj_Actor(x, y, "mouse",
                       animation_key = "A_MOUSE",
@@ -2262,7 +2594,7 @@ def game_initialize():
     '''
 
     global SURFACE_MAIN, SURFACE_MAP
-    global CLOCK, FOV_CALCULATE, ASSETS, CAMERA
+    global CLOCK, FOV_CALCULATE, ASSETS, CAMERA, RANDOM_ENGINE
 
     # initialize pygame
     pygame.init()
@@ -2288,14 +2620,11 @@ def game_initialize():
     # The CLOCK tracks and limits cpu cycles
     CLOCK = pygame.time.Clock()
 
+    # RANDOM NUMBER ENGINE
+    RANDOM_ENGINE = random.SystemRandom()
+
     # when FOV_CALCULATE is true, FOV recalculates
     FOV_CALCULATE = True
-
-    # starts a new game and map
-    try:
-        game_load()
-    except:
-        game_new()
 
 def game_handle_keys():
 
@@ -2404,7 +2733,7 @@ def game_exit():
 
     # quit the game
     pygame.quit()
-    exit()
+    sys.exit()
 
 def game_save():
 
@@ -2455,5 +2784,4 @@ def game_load():
 #                                            ################
 
 if __name__ == '__main__':
-    game_initialize()
-    game_main_loop()
+    menu_main()
