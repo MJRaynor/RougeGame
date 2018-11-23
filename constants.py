@@ -16,6 +16,7 @@ GAME_FPS = 60
 MAP_WIDTH = 20
 MAP_HEIGHT = 20
 MAP_MAX_NUM_ROOMS = 10
+MAP_NUM_LEVELS = 10
 
 # ROOM LIMITATIONS
 ROOM_MAX_HEIGHT = 7
@@ -27,6 +28,8 @@ ROOM_MIN_WIDTH = 3
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
 COLOR_GREY = (100, 100, 100)
+COLOR_DGREY = (50, 50, 50)
+COLOR_DARKERGREY = (25, 25, 25)
 COLOR_RED = (255, 0, 0)
 COLOR_GREEN = (0, 255, 0)
 
@@ -46,6 +49,7 @@ FONT_TITLE_SCREEN = pygame.font.Font('data\joystix.ttf', 26)
 FONT_DEBUG_MESSAGE = pygame.font.Font('data\joystix.ttf', 16)
 FONT_MESSAGE_TEXT = pygame.font.Font('data\joystix.ttf', 12)
 FONT_CURSOR_TEXT = pygame.font.Font('data\joystix.ttf', CELL_HEIGHT)
+FONT_TITLE_TEXT = pygame.font.Font('data\serpents.ttf', 40)
 
 # DEPTHS
 DEPTH_PLAYER = -100

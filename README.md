@@ -38,4 +38,7 @@ GamePart34  map transitions
 GamePart35  save and loading game
 GamePart36  stairs going up and down
 GamePart37  menus
-GamePart38  menuss again - game sounds
+GamePart38  game sounds
+GamePart39  menu revisited
+GamePart40  sliders pt 1
+GamePart41  sliders pt 2
