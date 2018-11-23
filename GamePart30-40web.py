@@ -2513,6 +2513,7 @@ def menu_tile_select(coords_origin = None, max_range = None, radius = None,
 #  \____|\___|_| |_|\___|_|  \__,_|\__\___/|_|  |___/
 
 ## PLAYER
+
 def gen_player(coords):
 
     global PLAYER
@@ -2522,9 +2523,10 @@ def gen_player(coords):
     # create the player
     container_com = com_Container()
 
-    creature_com = com_Creature("greg",
-                                base_atk = 40,
-                                base_def = 40,
+    creature_com = com_Creature("Paul",
+                                base_atk = 5,#base player attack
+                                base_def = 0,#base player defense
+                                max_hp = 50, #starting hp
                                 death_function = death_player)
 
     PLAYER = obj_Actor(x, y, "python",
@@ -2659,7 +2661,7 @@ def gen_weapon_sword(coords):
 
     x, y = coords
 
-    bonus = libtcod.random_get_int(0, 1, 2)
+    bonus = libtcod.random_get_int(0, 1, 5)
 
     equipment_com = com_Equipment(attack_bonus = bonus)
 
@@ -2673,7 +2675,7 @@ def gen_armor_shield(coords):
 
     x, y = coords
 
-    bonus = libtcod.random_get_int(0, 1, 2)
+    bonus = libtcod.random_get_int(0, 1, 5)
 
     equipment_com = com_Equipment(defense_bonus = bonus)
 
@@ -2768,7 +2770,7 @@ def gen_mouse(coords):
 
     ai_com = ai_Flee()
 
-    item_com = com_Item(use_function = cast_heal, value = 2)
+    item_com = com_Item(use_function = cast_heal, value = libtcod.random_get_int(0, 2, 10))#value of heal
 
     mouse = obj_Actor(x, y, "mouse",
                       animation_key = "A_MOUSE",
@@ -2938,6 +2940,13 @@ def game_handle_keys():
             # key 'p' -> pause the game
             if event.key == pygame.K_p:
                 menu_pause()
+
+            # key 's' -> prints current status
+            if event.key == pygame.K_s:
+                game_message(str(PLAYER.creature.name_instance) + " the " + str(PLAYER.name_object)
+                + "'s Health " + str(PLAYER.creature.current_hp) + "/" + str(PLAYER.creature.max_hp)
+                + "   Attack is " + str(PLAYER.creature.power)+" Defense is " + str(PLAYER.creature.defense),
+                constants.COLOR_GREEN)
 
             # key 'i' ->  open inventory menu
             if event.key == pygame.K_i:

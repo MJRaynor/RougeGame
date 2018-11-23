@@ -1,0 +1,9 @@
+******THIS CHARACTER LOST!******
+greg attacks Agnoan for 5 damage!
+Agnoan's health is 11/16
+Agnoan attacks greg for 6 damage!
+greg's health is 4/10
+greg attacks Agnoan for 5 damage!
+Agnoan's health is 6/16
+Agnoan attacks greg for 6 damage!
+greg's health is -2/10

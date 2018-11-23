@@ -1,0 +1,61 @@
+******THIS CHARACTER LOST!******
+Paul the python's Health 20/20   Attack is 5 Defense is 0
+Paul attacks Agnoan for 5 damage!
+Agnoan's health is 4/9
+Agnoan attacks Paul for 1 damage!
+Paul's health is 19/20
+Paul attacks Agnoan for 5 damage!
+Agnoan's health is -1/9
+Agnoan is dead!
+Picking up
+Morran attacks Paul for 3 damage!
+Paul's health is 16/20
+Paul attacks Morran for 5 damage!
+Morran's health is 13/18
+Morran attacks Paul for 3 damage!
+Paul's health is 13/20
+Paul attacks Morran for 5 damage!
+Morran's health is 8/18
+Morran attacks Paul for 3 damage!
+Paul's health is 10/20
+Paul attacks Morran for 5 damage!
+Morran's health is 3/18
+Morran attacks Paul for 3 damage!
+Paul's health is 7/20
+Paul attacks Morran for 5 damage!
+Morran's health is -2/18
+Morran is dead!
+Picking up
+Paul the python's Health 7/20   Attack is 5 Defense is 0
+item equipped
+Paul the python's Health 7/20   Attack is 7 Defense is 0
+Taboid attacks Paul for 1 damage!
+Paul's health is 6/20
+Paul attacks Taboid for 7 damage!
+Taboid's health is -2/5
+Taboid is dead!
+Picking up
+Paul the python's Health 6/20   Attack is 7 Defense is 0
+item equipped
+Paul the python's Health 6/20   Attack is 8 Defense is 0
+item unequipped
+Paul the python's Health 6/20   Attack is 6 Defense is 0
+item unequipped
+Paul the python's Health 6/20   Attack is 5 Defense is 0
+item equipped
+Paul the python's Health 6/20   Attack is 7 Defense is 0
+Item Dropped!
+Paul attacks Beoigain for 7 damage!
+Beoigain's health is -6/1
+Beoigain is dead!  Eat him for more health!
+Picking up
+Picking up
+Paul the python's Health 6/20   Attack is 7 Defense is 0
+item equipped
+Paul the python's Health 6/20   Attack is 8 Defense is 0
+Brigared attacks Paul for 3 damage!
+Paul's health is 3/20
+Paul attacks Brigared for 8 damage!
+Brigared's health is 12/20
+Brigared attacks Paul for 3 damage!
+Paul's health is 0/20
