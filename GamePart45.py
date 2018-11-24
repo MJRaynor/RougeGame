@@ -714,6 +714,8 @@ class com_Creature:
         '''
 
         damage_delt = self.power - target.creature.defense
+        if damage_delt <= 0:
+            damage_delt = 0
 
         game_message(self.name_instance + " attacks " +
             target.creature.name_instance + " for " + str(damage_delt) +
@@ -2663,7 +2665,7 @@ def gen_weapon_sword(coords):
 
     bonus = libtcod.random_get_int(0, 1, 5)
 
-    equipment_com = com_Equipment(attack_bonus = bonus)
+    equipment_com = com_Equipment(attack_bonus = bonus, slot = "right_hand")
 
     return_object = obj_Actor(x, y, "sword", animation_key = "S_SWORD",
                               depth = constants.DEPTH_ITEM,
@@ -2677,7 +2679,7 @@ def gen_armor_shield(coords):
 
     bonus = libtcod.random_get_int(0, 1, 5)
 
-    equipment_com = com_Equipment(defense_bonus = bonus)
+    equipment_com = com_Equipment(defense_bonus = bonus, slot = "left_hand")
 
     return_object = obj_Actor(x, y, "shield", animation_key = "S_SHIELD",
                               depth = constants.DEPTH_ITEM,

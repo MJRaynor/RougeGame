@@ -1,0 +1,168 @@
+******THIS CHARACTER WON!******
+Paul attacks Agnoded for 5 damage!
+Agnoded's health is 13/18
+Agnoded attacks Paul for 3 damage!
+Paul's health is 47/50
+Paul attacks Agnoded for 5 damage!
+Agnoded's health is 8/18
+Agnoded attacks Paul for 3 damage!
+Paul's health is 44/50
+Paul attacks Agnoded for 5 damage!
+Agnoded's health is 3/18
+Agnoded attacks Paul for 3 damage!
+Paul's health is 41/50
+Paul attacks Agnoded for 5 damage!
+Agnoded's health is -2/18
+Agnoded is dead!
+Picking up
+item equipped
+Morrna attacks Paul for 0 damage!
+Paul's health is 41/50
+Morrna attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Morrna for 5 damage!
+Morrna's health is 4/9
+Morrna attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Morrna for 5 damage!
+Morrna's health is -1/9
+Morrna is dead!
+Picking up
+Paul attacks Beotha for 5 damage!
+Beotha's health is 5/10
+Beotha attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Beotha for 5 damage!
+Beotha's health is 0/10
+Beotha is dead!
+Paul attacks Creaman for 5 damage!
+Creaman's health is 14/19
+Creaman attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Creaman for 5 damage!
+Creaman's health is 9/19
+Creaman attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Creaman for 5 damage!
+Creaman's health is 4/19
+Creaman attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Creaman for 5 damage!
+Creaman's health is -1/19
+Creaman is dead!
+Picking up
+Paul the python's Health 41/50   Attack is 5 Defense is 5
+Picking up
+Paul attacks Agnogus for 5 damage!
+Agnogus's health is -4/1
+Agnogus is dead!  Eat him for more health!
+Picking up
+Paul attacks Danbaeth for 5 damage!
+Danbaeth's health is -4/1
+Danbaeth is dead!  Eat him for more health!
+Picking up
+Picking up
+Paul attacks Erthach for 5 damage!
+Erthach's health is -4/1
+Erthach is dead!  Eat him for more health!
+Picking up
+Picking up
+item equipped
+Paul the python's Health 41/50   Attack is 6 Defense is 5
+Paul attacks Eladai for 6 damage!
+Eladai's health is 3/9
+Eladai attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Eladai for 6 damage!
+Eladai's health is -3/9
+Eladai is dead!
+Paul attacks Eothach for 6 damage!
+Eothach's health is -5/1
+Eothach is dead!  Eat him for more health!
+Picking up
+Ogchan attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Ogchan for 6 damage!
+Ogchan's health is 4/10
+Ogchan attacks Paul for 0 damage!
+Paul's health is 41/50
+Paul attacks Ogchan for 6 damage!
+Ogchan's health is -2/10
+Ogchan is dead!
+Paul attacks Morraid for 6 damage!
+Morraid's health is -5/1
+Morraid is dead!  Eat him for more health!
+Picking up
+Paul attacks Eobath for 6 damage!
+Eobath's health is 11/17
+Eobath attacks Paul for 1 damage!
+Paul's health is 40/50
+Paul attacks Eobath for 6 damage!
+Eobath's health is 5/17
+Eobath attacks Paul for 1 damage!
+Paul's health is 39/50
+Paul attacks Eobath for 6 damage!
+Eobath's health is -1/17
+Eobath is dead!
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Tabama attacks Paul for 0 damage!
+Paul's health is 39/50
+Tabama attacks Paul for 0 damage!
+Paul's health is 39/50
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Tabama attacks Paul for 0 damage!
+Paul's health is 39/50
+Tabama attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Tabama for 6 damage!
+Tabama's health is 3/9
+Tabama attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Tabama for 6 damage!
+Tabama's health is -3/9
+Tabama is dead!
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Morrid attacks Paul for 0 damage!
+Paul's health is 39/50
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Morrid attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Morrid for 6 damage!
+Morrid's health is 2/8
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Morrid attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Morrid for 6 damage!
+Morrid's health is -4/8
+Morrid is dead!
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Agnochne for 6 damage!
+Agnochne's health is 2/8
+Agnochne attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Agnochne for 6 damage!
+Agnochne's health is -4/8
+Agnochne is dead!
+Picking up
+Eladne attacks Paul for 0 damage!
+Paul's health is 39/50
+Eladne attacks Paul for 0 damage!
+Paul's health is 39/50
+Eladne attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Eladne for 6 damage!
+Eladne's health is -1/5
+Eladne is dead!
+Paul attacks Beoboma for 6 damage!
+Beoboma's health is 3/9
+Beoboma attacks Paul for 0 damage!
+Paul's health is 39/50
+Paul attacks Beoboma for 6 damage!
+Beoboma's health is -3/9
+Beoboma is dead!

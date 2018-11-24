@@ -1,0 +1,328 @@
+******THIS CHARACTER WON!******
+Paul attacks Erthach for 5 damage!
+Erthach's health is -4/1
+Erthach is dead!  Eat him for more health!
+Picking up
+Picking up
+Picking up
+Elabot attacks Morrain for 0 damage!
+Morrain's health is 1/1
+Elabot attacks Morrain for 0 damage!
+Morrain's health is 1/1
+Elabot attacks Morrain for 0 damage!
+Morrain's health is 1/1
+Elabot attacks Morrain for 0 damage!
+Morrain's health is 1/1
+Paul attacks Elabot for 5 damage!
+Elabot's health is -4/1
+Elabot is dead!  Eat him for more health!
+Picking up
+Paul attacks Morrain for 5 damage!
+Morrain's health is -4/1
+Morrain is dead!  Eat him for more health!
+Picking up
+Alligtha attacks Paul for 2 damage!
+Paul's health is 48/50
+Alligtha attacks Paul for 2 damage!
+Paul's health is 46/50
+Paul attacks Alligtha for 5 damage!
+Alligtha's health is 1/6
+Alligtha attacks Paul for 2 damage!
+Paul's health is 44/50
+Paul attacks Alligtha for 5 damage!
+Alligtha's health is -4/6
+Alligtha is dead!
+Picking up
+Agnoid attacks Paul for 2 damage!
+Paul's health is 42/50
+Paul attacks Agnoid for 5 damage!
+Agnoid's health is 3/8
+Agnoid attacks Paul for 2 damage!
+Paul's health is 40/50
+Paul attacks Agnoid for 5 damage!
+Agnoid's health is -2/8
+Agnoid is dead!
+Picking up
+item equipped
+Paul the python's Health 40/50   Attack is 5 Defense is 4
+Danded's health is 16/18
+The monster howls out in pain.
+Danded's health is 14/18
+The monster howls out in pain.
+Danded's health is 11/18
+The monster howls out in pain.
+Paul attacks Danded for 5 damage!
+Danded's health is 6/18
+Danded attacks Paul for -1 damage!
+Paul's health is 41/50
+Paul attacks Danded for 5 damage!
+Danded's health is 1/18
+Danded attacks Paul for -1 damage!
+Paul's health is 42/50
+Paul attacks Danded for 5 damage!
+Danded's health is -4/18
+Danded is dead!
+item unequipped
+Paul attacks Erbaan for 5 damage!
+Erbaan's health is 0/5
+Erbaan is dead!
+Origme attacks Paul for 1 damage!
+Paul's health is 41/50
+Origme attacks Paul for 1 damage!
+Paul's health is 40/50
+Origme attacks Paul for 1 damage!
+Paul's health is 39/50
+Origme attacks Paul for 1 damage!
+Paul's health is 38/50
+Origme attacks Paul for 1 damage!
+Paul's health is 37/50
+Paul attacks Origme for 5 damage!
+Origme's health is 1/6
+Origme attacks Paul for 1 damage!
+Paul's health is 36/50
+Paul attacks Origme for 5 damage!
+Origme's health is -4/6
+Origme is dead!
+Brigdai attacks Paul for 2 damage!
+Paul's health is 34/50
+Picking up
+item equipped
+Paul attacks Brigdai for 7 damage!
+Brigdai's health is 3/10
+Brigdai attacks Paul for 2 damage!
+Paul's health is 32/50
+Paul the python's Health 32/50   Attack is 7 Defense is 0
+Paul attacks Brigdai for 7 damage!
+Brigdai's health is -4/10
+Brigdai is dead!
+Danchiu attacks Paul for 2 damage!
+Paul's health is 30/50
+Danchiu attacks Paul for 2 damage!
+Paul's health is 28/50
+Paul attacks Danchiu for 7 damage!
+Danchiu's health is 0/7
+Danchiu is dead!
+Paul attacks Aenaid for 7 damage!
+Aenaid's health is -6/1
+Aenaid is dead!  Eat him for more health!
+Picking up
+Elaand attacks Paul for 5 damage!
+Paul's health is 23/50
+Paul attacks Elaand for 7 damage!
+Elaand's health is 10/17
+Elaand attacks Paul for 5 damage!
+Paul's health is 18/50
+Paul attacks Elaand for 7 damage!
+Elaand's health is 3/17
+Elaand attacks Paul for 5 damage!
+Paul's health is 13/50
+Paul attacks Elaand for 7 damage!
+Elaand's health is -4/17
+Elaand is dead!
+Paul attacks Danded for 7 damage!
+Danded's health is -6/1
+Danded is dead!  Eat him for more health!
+Picking up
+Picking up
+Nuchid attacks Paul for 2 damage!
+Paul's health is 11/50
+Nuchid attacks Paul for 2 damage!
+Paul's health is 9/50
+Paul attacks Nuchid for 7 damage!
+Nuchid's health is -1/6
+Nuchid is dead!
+Paul the python's Health 9/50   Attack is 7 Defense is 0
+Paul the python healed for 10 health!
+Paul's health is 19/50
+Paul the python healed for 7 health!
+Paul's health is 26/50
+Paul the python healed for 3 health!
+Paul's health is 29/50
+Paul the python healed for 10 health!
+Paul's health is 39/50
+Paul the python healed for 6 health!
+Paul's health is 45/50
+Paul attacks Allthach for 7 damage!
+Allthach's health is -6/1
+Allthach is dead!  Eat him for more health!
+Picking up
+Picking up
+Paul attacks Agnoth for 7 damage!
+Agnoth's health is -6/1
+Agnoth is dead!  Eat him for more health!
+Picking up
+Paul attacks Delaaid for 7 damage!
+Delaaid's health is -6/1
+Delaaid is dead!  Eat him for more health!
+Picking up
+Morrai attacks Paul for 2 damage!
+Paul's health is 43/50
+Paul attacks Morrai for 7 damage!
+Morrai's health is 3/10
+Morrai attacks Paul for 2 damage!
+Paul's health is 41/50
+Paul attacks Morrai for 7 damage!
+Morrai's health is -4/10
+Morrai is dead!
+Picking up
+Agnoiu attacks Paul for 1 damage!
+Paul's health is 40/50
+Paul attacks Deldai for 7 damage!
+Deldai's health is 3/10
+Agnoiu attacks Paul for 1 damage!
+Paul's health is 39/50
+Deldai attacks Paul for 2 damage!
+Paul's health is 37/50
+Paul attacks Deldai for 7 damage!
+Deldai's health is -4/10
+Deldai is dead!
+Agnoiu attacks Paul for 1 damage!
+Paul's health is 36/50
+Paul attacks Agnoiu for 7 damage!
+Agnoiu's health is -2/5
+Agnoiu is dead!
+Paul attacks Crearna for 7 damage!
+Crearna's health is 1/8
+Crearna attacks Paul for 1 damage!
+Paul's health is 35/50
+Paul attacks Crearna for 7 damage!
+Crearna's health is -6/8
+Crearna is dead!
+Agnolam's health is 12/17
+Agnolam's health is 10/17
+The monster howls out in pain.
+Agnolam's health is 7/17
+The monster howls out in pain.
+Agnolam attacks Paul for 3 damage!
+Paul's health is 32/50
+Paul attacks Agnolam for 7 damage!
+Agnolam's health is 0/17
+Agnolam is dead!
+Erdtha attacks Paul for 2 damage!
+Paul's health is 30/50
+Paul attacks Erdtha for 7 damage!
+Erdtha's health is 3/10
+Erdtha attacks Paul for 2 damage!
+Paul's health is 28/50
+Paul attacks Erdtha for 7 damage!
+Erdtha's health is -4/10
+Erdtha is dead!
+Agnobat attacks Paul for 3 damage!
+Paul's health is 25/50
+Agnobat attacks Paul for 3 damage!
+Paul's health is 22/50
+Paul attacks Agnobat for 7 damage!
+Agnobat's health is 11/18
+Agnobat attacks Paul for 3 damage!
+Paul's health is 19/50
+Paul attacks Agnobat for 7 damage!
+Agnobat's health is 4/18
+Agnobat attacks Paul for 3 damage!
+Paul's health is 16/50
+Paul attacks Agnobat for 7 damage!
+Agnobat's health is -3/18
+Agnobat is dead!
+Picking up
+Agnome attacks Paul for 1 damage!
+Paul's health is 15/50
+Picking up
+Agnome attacks Paul for 1 damage!
+Paul's health is 14/50
+Agnome attacks Paul for 1 damage!
+Paul's health is 13/50
+Agnome attacks Paul for 1 damage!
+Paul's health is 12/50
+Agnome attacks Paul for 1 damage!
+Paul's health is 11/50
+Agnoda attacks Paul for 2 damage!
+Paul's health is 9/50
+Paul attacks Agnoda for 7 damage!
+Agnoda's health is 2/9
+Agnome attacks Paul for 1 damage!
+Paul's health is 8/50
+Agnoda attacks Paul for 2 damage!
+Paul's health is 6/50
+Paul attacks Agnoda for 7 damage!
+Agnoda's health is -5/9
+Agnoda is dead!
+Agnome attacks Paul for 1 damage!
+Paul's health is 5/50
+Agnome attacks Paul for 1 damage!
+Paul's health is 4/50
+Paul attacks Agnome for 7 damage!
+Agnome's health is -1/6
+Agnome is dead!
+Paul attacks Delaid for 7 damage!
+Delaid's health is -6/1
+Delaid is dead!  Eat him for more health!
+Picking up
+Paul the python healed for 7 health!
+Paul's health is 11/50
+Paul the python healed for 7 health!
+Paul's health is 18/50
+Paul the python healed for 8 health!
+Paul's health is 26/50
+Paul the python healed for 9 health!
+Paul's health is 35/50
+Morrme attacks Paul for 1 damage!
+Paul's health is 34/50
+Paul attacks Morrme for 7 damage!
+Morrme's health is 1/8
+Morrme attacks Paul for 1 damage!
+Paul's health is 33/50
+Paul attacks Morrme for 7 damage!
+Morrme's health is -6/8
+Morrme is dead!
+Picking up
+Paul attacks Agnoman for 7 damage!
+Agnoman's health is -6/1
+Agnoman is dead!  Eat him for more health!
+Picking up
+Picking up
+Paul attacks Alligid for 7 damage!
+Alligid's health is 1/8
+Alligid attacks Paul for 1 damage!
+Paul's health is 32/50
+Paul attacks Alligid for 7 damage!
+Alligid's health is -6/8
+Alligid is dead!
+Agnoan attacks Paul for 1 damage!
+Paul's health is 31/50
+Tachne attacks Paul for 1 damage!
+Paul's health is 30/50
+Tachne attacks Paul for 1 damage!
+Paul's health is 29/50
+Paul attacks Tachne for 7 damage!
+Tachne's health is 0/7
+Tachne is dead!
+Paul attacks Agnoaid for 7 damage!
+Agnoaid's health is -6/1
+Agnoaid is dead!  Eat him for more health!
+Picking up
+Paul attacks Nubaeth for 7 damage!
+Nubaeth's health is -6/1
+Nubaeth is dead!  Eat him for more health!
+Morrma attacks Paul for 1 damage!
+Paul's health is 28/50
+Picking up
+Morrma attacks Paul for 1 damage!
+Paul's health is 27/50
+Paul attacks Morrma for 7 damage!
+Morrma's health is 3/10
+Morrma attacks Paul for 1 damage!
+Paul's health is 26/50
+Paul attacks Morrma for 7 damage!
+Morrma's health is -4/10
+Morrma is dead!
+Brigna attacks Paul for 2 damage!
+Paul's health is 24/50
+Paul attacks Brigna for 7 damage!
+Brigna's health is 1/8
+Brigna attacks Paul for 2 damage!
+Paul's health is 22/50
+Paul attacks Brigna for 7 damage!
+Brigna's health is -6/8
+Brigna is dead!
+Picking up
+Picking up
+Picking up
