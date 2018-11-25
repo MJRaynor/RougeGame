@@ -1,0 +1,74 @@
+******THIS CHARACTER LOST!******
+Aenbona attacks Paul for 2 damage!
+Paul's health is 48/50
+Paul attacks Aenbona for 5 damage!
+Aenbona's health is 3/8
+Aenbona attacks Paul for 2 damage!
+Paul's health is 46/50
+Paul attacks Aenbona for 5 damage!
+Aenbona's health is -2/8
+Aenbona is dead!
+Paul attacks Orbama for 5 damage!
+Orbama's health is 0/5
+Orbama is dead!
+Picking up
+Paul attacks Morrna for 5 damage!
+Morrna's health is 4/9
+Morrna attacks Paul for 2 damage!
+Paul's health is 44/50
+Paul attacks Morrna for 5 damage!
+Morrna's health is -1/9
+Morrna is dead!
+Picking up
+Morrai attacks Paul for 2 damage!
+Paul's health is 42/50
+Paul attacks Morrai for 5 damage!
+Morrai's health is 4/9
+Morrai attacks Paul for 2 damage!
+Paul's health is 40/50
+Paul attacks Morrai for 5 damage!
+Morrai's health is -1/9
+Morrai is dead!
+Picking up
+item equipped
+Paul attacks Danbame for 8 damage!
+Danbame's health is 1/9
+Danbame attacks Paul for 2 damage!
+Paul's health is 38/50
+Paul attacks Danbame for 8 damage!
+Danbame's health is -7/9
+Danbame is dead!
+Picking up
+Etarda attacks Paul for 2 damage!
+Paul's health is 36/50
+Paul attacks Etarda for 8 damage!
+Etarda's health is -2/6
+Etarda is dead!
+Erigod attacks Paul for 3 damage!
+Paul's health is 33/50
+Erigod attacks Paul for 3 damage!
+Paul's health is 30/50
+Paul attacks Erigod for 8 damage!
+Erigod's health is 8/16
+Erigod attacks Paul for 3 damage!
+Paul's health is 27/50
+Paul attacks Erigod for 8 damage!
+Erigod's health is 0/16
+Erigod is dead!
+Agnoart attacks Paul for 6 damage!
+Paul's health is 21/50
+Paul attacks Agnoart for 8 damage!
+Agnoart's health is 10/18
+Agnoart attacks Paul for 6 damage!
+Paul's health is 15/50
+Paul attacks Agnoart for 8 damage!
+Agnoart's health is 2/18
+Agnoart attacks Paul for 6 damage!
+Paul's health is 9/50
+Paul attacks Agnoart for 8 damage!
+Agnoart's health is -6/18
+Agnoart is dead!
+Danaran attacks Paul for 5 damage!
+Paul's health is 4/50
+Danaran attacks Paul for 5 damage!
+Paul's health is -1/50

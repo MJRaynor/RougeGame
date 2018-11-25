@@ -1,7 +1,20 @@
-# RougeGame
-YouTube based web tutorial for a Python Rogue-like game
+# Rouge-Like Python based Game
+This code is based on the Youtube tutorial series by
+Michael Coates as The Terrible Programmer
 
-Being maintained by ClassBytes.net
+https://www.youtube.com/watch?v=6XfQqFvJtts
+https://bitbucket.org/Azhain/python-roguelike-tutorials/
+
+This file is maintained by ClassBytes.net
+
+Controls for game:
+Arrow Keys       - Move your character
+G                - Get an Item
+D                - Drop an Item
+S                - Get current status of character(Health,Attack,Defense
+Shift+.(period)  - Go up a level or down a level when you are on stairs
+I                - Inventory menu - use the mouse in menu screen to equipt/unequipt or use an item
+
 
 GamePart04  created a mpa composed of tiles, player icon can move with keyboard
 GamePart05  created enemy charavter - component system
